@@ -10,7 +10,7 @@ import { Stack, Link, router } from 'expo-router';
 export default function HomeScreen() {
   return (
     <View>
-        <Welcome />
+
     </View>
   );
 }
