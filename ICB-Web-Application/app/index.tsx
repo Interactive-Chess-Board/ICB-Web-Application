@@ -5,13 +5,14 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import Welcome from './Pages/Welcome';
-import LoginPage from './Pages/Login_Page';
+import Homepage from './Pages/HomePage';
 import { Stack, Link, router } from 'expo-router';
+import LoginPage from './Pages/Login_Page';
 
 export default function HomeScreen() {
   return (
     <View>
-        <LoginPage />
+        <Homepage />
     </View>
   );
 }

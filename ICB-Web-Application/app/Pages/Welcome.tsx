@@ -4,8 +4,14 @@ import { Text, Image, StyleSheet, Button, Pressable } from "react-native";
 import { SvgUri } from "react-native-svg";
 import Svg, { Path } from "react-native-svg"
 import LOGOSVG from "../../assets/images/Welcome/FallingPiece.svg";
+import FallingPiece from "../../assets/images/Welcome/FallingPiece.png";
+import { Dimensions, StatusBar } from "react-native";
 
+const dimensions = Dimensions.get('window');
+const imageHeight = dimensions.height ;
+const imageWidth = dimensions.width;
 export default function Welcome(){
+    
     return(
         <SafeAreaView style={styles.safeArea}>
 
@@ -14,8 +20,11 @@ export default function Welcome(){
             <Svg
                 width="100%"
                 height="100%"
+                style = {styles.svg}
+
             >
                 <LOGOSVG />
+
             </Svg>
             </View>
 
@@ -26,7 +35,7 @@ export default function Welcome(){
                 <Text style={styles.SubTitle}>An immersive, interactive chess board bringing classic game to life with real-time strategy and dynamic features for all skill levels.</Text>
 
                 <View style={styles.ButtonsContainer}>
-                <Pressable style = {styles.LoginButton} ><Text style={styles.LoginText}>Login</Text></Pressable>
+                <Pressable onPress={() => console.log("hello")} style = {styles.LoginButton} ><Text style={styles.LoginText}>Login</Text></Pressable>
                 <Pressable style = {styles.RegisterButton} ><Text style={styles.RegisterText}>Register</Text></Pressable>
                 <Pressable style = {styles.GuestButton} ><Text style={styles.GuestText}>Play as guest</Text></Pressable>
 
@@ -43,10 +52,16 @@ const styles = StyleSheet.create({
 
     // Containers Styles
     safeArea: {
+        flex: 0,
+        justifyContent:"center",
+        width: imageWidth,
+        height: "auto"
     },
     svgContainer: {
-        width: "100%",
-        height: 500
+        flex: 0,
+        width: "auto",
+        backgroundColor: "black",
+        height: 600
     },
     otherContainer:{
         position: "absolute",
@@ -128,6 +143,12 @@ const styles = StyleSheet.create({
         height: 50,
         borderRadius: 10
 
+    },
+
+    //image style
+    svg: {
+        width: "100%",
+        height: "100%"
     }
 
     
