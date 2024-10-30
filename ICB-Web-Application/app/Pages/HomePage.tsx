@@ -80,6 +80,28 @@ export default function Homepage(){
         {/* Last Game Stats */}
         <View style = {styles.LastGameContainer}>
             <Text style = {styles.GameNumberText}> Game Number 0</Text>
+
+            <View style={styles.StatisticsContainer}>
+                <View>
+                    <Image style = {styles.IconsSmiley} source={require("../../assets/images/HomePage/Smile.png")}></Image>
+                    <Text style = {styles.StatisticNumbers}>8</Text>
+                    <Text style={styles.StatisticsTexts}>Good Moves</Text>
+                </View>
+
+                <View>
+                    <Image style = {styles.IconsSmiley} source={require("../../assets/images/HomePage/Smile.png")}></Image>
+                    <Text style = {styles.StatisticNumbers}>8</Text>
+                    <Text style={styles.StatisticsTexts}>Good Moves</Text>
+                </View>
+
+                <View>
+                    <Image style = {styles.IconsSmiley} source={require("../../assets/images/HomePage/Smile.png")}></Image>
+                    <Text style = {styles.StatisticNumbers}>8</Text>
+                    <Text style={styles.StatisticsTexts}>Good Moves</Text>
+                </View>
+
+            </View>
+
             <Pressable style = {styles.GameNumberButton}><Text style = {styles.GameNumberButtonText}>See more</Text></Pressable>
             
         </View>
@@ -213,6 +235,27 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         letterSpacing: 0.25,
         color: 'white',
+
+    },
+    IconsSmiley:{
+        width: 30,
+        height: 30,
+        alignSelf: "center"
+    },
+    StatisticsContainer :{
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-around",
+        width: "90%",
+        alignSelf: "center",
+        padding: 2
+    },
+    StatisticsTexts: {
+        textAlign: "center"
+
+    },
+    StatisticNumbers: {
+        textAlign: "center"
 
     }
 
