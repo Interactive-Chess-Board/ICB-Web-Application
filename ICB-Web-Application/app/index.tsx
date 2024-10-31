@@ -6,13 +6,14 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import Welcome from './Pages/Welcome';
 import Homepage from './Pages/HomePage';
+import SignUpPage from './Pages/SignUpPage';
 import { Stack, Link, router } from 'expo-router';
 import LoginPage from './Pages/Login_Page';
 
 export default function HomeScreen() {
   return (
     <View>
-        <Homepage />
+        <SignUpPage />
     </View>
   );
 }
