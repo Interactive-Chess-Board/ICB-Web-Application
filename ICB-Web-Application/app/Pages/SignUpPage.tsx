@@ -2,9 +2,9 @@ import { Dimensions, Pressable, SafeAreaView, StatusBar, StyleSheet, Text, TextI
 
 //Init Device Variables
     const dimensions = Dimensions.get('window');
-    const Height = dimensions.height + StatusBar.currentHeight;
+    const Height = dimensions.height ;
     const Width = dimensions.width;
-    const StatusBarHeight = StatusBar.currentHeight;
+    const StatusBarHeight = 0;
 
 export default function SignUpPage(){
     
@@ -142,7 +142,6 @@ const styles = StyleSheet.create({
         height: 10,
         backgroundColor: "black",
         borderRadius: 5
-
     }
 
 });
