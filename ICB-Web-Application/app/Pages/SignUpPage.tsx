@@ -9,7 +9,7 @@ import { Dimensions, Pressable, SafeAreaView, StatusBar, StyleSheet, Text, TextI
 export default function SignUpPage(){
     
     return(
-        <SafeAreaView>
+        <SafeAreaView style = {{backgroundColor: "#F1F1F1", height: "100%"}}>
             {/* Top Title View */}
             <View style= {styles.TitleContainer}>
                 <Text style={styles.TitleText}>Sign up</Text>
