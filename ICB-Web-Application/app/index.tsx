@@ -9,13 +9,15 @@ import Homepage from './Pages/HomePage';
 import SignUpPage from './Pages/SignUpPage';
 import Bluetooth from './Pages/Bluetooth';
 import SetUpPage from './Pages/SetUpPage';
+import SignUpPage2 from './Pages/SignUpPage2';
+import CongratulationsPage from './Pages/CongratulationsPage';
 import { Stack, Link, router } from 'expo-router';
 import LoginPage from './Pages/Login_Page';
 
 export default function HomeScreen() {
   return (
     <View>
-        <SetUpPage />
+        <CongratulationsPage />
     </View>
   );
 }
