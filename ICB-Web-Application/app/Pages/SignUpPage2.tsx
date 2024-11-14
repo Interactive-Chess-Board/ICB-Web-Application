@@ -1,6 +1,6 @@
 import React from 'react';
 import { Dimensions, Pressable, SafeAreaView, StyleSheet, Text, View, Image } from "react-native";
-import { AntDesign } from '@expo/vector-icons'; // Make sure to install @expo/vector-icons for the back arrow
+import { AntDesign } from '@expo/vector-icons';
 
 // Initialize Device Variables
 const dimensions = Dimensions.get('window');
