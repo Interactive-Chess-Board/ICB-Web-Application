@@ -7,6 +7,7 @@ import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Header } from 'react-native/Libraries/NewAppScreen';
+import { StatusBar } from 'expo-status-bar';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -31,7 +32,7 @@ export default function RootLayout() {
     <ThemeProvider value={colorScheme === 'dark' ? DefaultTheme : DefaultTheme}>
 
       {/* Navigate to IndexJS and Hide the header */}
-      <Stack screenOptions={{headerShown : false}}> 
+      <Stack screenOptions={{headerShown : false}}>
         <Stack.Screen name="+not-found" />
       </Stack>
       

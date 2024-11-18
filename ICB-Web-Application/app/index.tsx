@@ -11,17 +11,18 @@ import Bluetooth from './Pages/Bluetooth';
 import SetUpPage from './Pages/SetUpPage';
 import SignUpPage2 from './Pages/SignUpPage2';
 import CongratulationsPage from './Pages/CongratulationsPage';
+import ProfilePage from './Pages/Profile-Page';
 import { Stack, Link, router } from 'expo-router';
 import LoginPage from './Pages/Login_Page';
 
 export default function HomeScreen() {
   return (
     <View>
-        <CongratulationsPage />
+        <ProfilePage />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-
+  
 });
