@@ -2,10 +2,10 @@ import { ThemedText } from "@/components/ThemedText";
 import { SafeAreaView, View } from "react-native";
 import { Text, Image, StyleSheet, Button, Pressable } from "react-native";
 import { SvgUri } from "react-native-svg";
-import Svg, { Path } from "react-native-svg"
-import LOGOSVG from "../../assets/images/Welcome/FallingPiece.svg";
-import FallingPiece from "../../assets/images/Welcome/FallingPiece.png";
+import Svg, { Path } from "react-native-svg";
+import LOGOSVG from "../assets/images/Welcome/FallingPiece.svg";
 import { Dimensions, StatusBar } from "react-native";
+import { Link, router } from "expo-router";
 
 const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height ;
@@ -18,7 +18,7 @@ export default function Welcome(){
             {/* Images and svg's div */}
             <View style={styles.svgContainer}>
             <Svg
-                width="100%"
+                width="110%"
                 height="100%"
                 style = {styles.svg}
 
@@ -35,9 +35,10 @@ export default function Welcome(){
                 <Text style={styles.SubTitle}>An immersive, interactive chess board bringing classic game to life with real-time strategy and dynamic features for all skill levels.</Text>
 
                 <View style={styles.ButtonsContainer}>
-                <Pressable onPress={() => console.log("hello")} style = {styles.LoginButton} ><Text style={styles.LoginText}>Login</Text></Pressable>
-                <Pressable style = {styles.RegisterButton} ><Text style={styles.RegisterText}>Register</Text></Pressable>
-                <Pressable style = {styles.GuestButton} ><Text style={styles.GuestText}>Play as guest</Text></Pressable>
+                
+                <Pressable style = {styles.LoginButton} onPress={() => router.push("/Login_Page")} ><Text style={styles.LoginText}>Login</Text></Pressable>
+                <Pressable onPress={() => router.push("/SignUpPage")} style = {styles.RegisterButton} ><Text style={styles.RegisterText}>Register</Text></Pressable>
+                <Pressable onPress={() => router.push("/HomePage")} style = {styles.GuestButton} ><Text style={styles.GuestText}>Play as guest</Text></Pressable>
 
                 </View>
             </View>
@@ -98,7 +99,7 @@ const styles = StyleSheet.create({
     LoginText:{
         color: 'white',
         fontWeight: "bold",
-        textAlign: "center"
+        textAlign: "center",
 
     },
     RegisterText:{
@@ -121,7 +122,9 @@ const styles = StyleSheet.create({
         backgroundColor: 'black',
         width: "100%",
         height: 50,
-        borderRadius: 10
+        borderRadius: 10,
+        alignItems: "center",
+        textAlign: "center"
     },
     RegisterButton: {
         display: "flex",

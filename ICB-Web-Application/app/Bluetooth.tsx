@@ -16,7 +16,7 @@ export default function Bluetooth(){
 
                 {/* Bluetooth Icon */}
                 <View style = {styles.ImageContainer}>
-                    <Image style={styles.Image} source= {require("../../assets/images/Bluetooth/BluetoothIcon.png")} />
+                    <Image style={styles.Image} source= {require("../assets/images/Bluetooth/BluetoothIcon.png")} />
                 </View>
 
             </View>
@@ -26,7 +26,7 @@ export default function Bluetooth(){
 
 const styles = StyleSheet.create({
     MiddleContainer: {
-        width: "100%",
+        width: "110%",
         height: "100%",
         justifyContent: "center",
         alignItems: "center",

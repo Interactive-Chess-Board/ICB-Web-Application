@@ -1,28 +1,15 @@
-import { Image, StyleSheet, Platform, View } from 'react-native';
-
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import Welcome from './Pages/Welcome';
-import Homepage from './Pages/HomePage';
-import SignUpPage from './Pages/SignUpPage';
-import Bluetooth from './Pages/Bluetooth';
-import SetUpPage from './Pages/SetUpPage';
-import SignUpPage2 from './Pages/SignUpPage2';
-import CongratulationsPage from './Pages/CongratulationsPage';
-import ProfilePage from './Pages/Profile-Page';
-import { Stack, Link, router } from 'expo-router';
-import LoginPage from './Pages/Login_Page';
+import { Link } from "expo-router";
+import { View, Text } from "react-native";
+import Welcome from "./Welcome";
+import Homepage from "./HomePage";
+import Bluetooth from "./Bluetooth";
+import SignUpPage from "./SignUpPage";
+import SignUpPage2 from "./SignUpPage2";
 
 export default function HomeScreen() {
-  return (
-    <View>
-        <ProfilePage />
-    </View>
-  );
+    return (
+        <View style = {[{flex: 1, margin: 0, padding: 0}]}>
+            <Link href={'/Welcome'}><Welcome /></Link>
+        </View>
+    )
 }
-
-const styles = StyleSheet.create({
-  
-});

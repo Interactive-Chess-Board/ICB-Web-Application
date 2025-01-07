@@ -2,12 +2,12 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
+import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
+import Welcome from './Welcome';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { Header } from 'react-native/Libraries/NewAppScreen';
-import { StatusBar } from 'expo-status-bar';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -30,12 +30,15 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DefaultTheme : DefaultTheme}>
-
-      {/* Navigate to IndexJS and Hide the header */}
-      <Stack screenOptions={{headerShown : false}}>
-        <Stack.Screen name="+not-found" />
+      <Stack
+        initialRouteName="Welcome"
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        <Stack.Screen name="Welcome" options={{title: 'Welcome'}} />
       </Stack>
-      
+      <StatusBar style= "light" />
     </ThemeProvider>
   );
 }

@@ -1,5 +1,7 @@
+import { router } from "expo-router";
 import React, {useState} from "react";
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { HandleLogin } from "./config/firebase";
 
 
 export default function LoginPage(){
@@ -8,15 +10,16 @@ export default function LoginPage(){
     const handleLogin = () => {
         console.log('Email:', email);
         console.log('Password:', password);
+        router.push('/HomePage');
       };
       
 
       return (
         <View >
           {/* Back Button */}
-          <TouchableOpacity style={styles.backButton}>
+          {/* <TouchableOpacity style={styles.backButton}>
             <Text style={styles.backButtonText}>←</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <View style = {styles.container}>
           
@@ -27,7 +30,7 @@ export default function LoginPage(){
         </View>
 
       <Image
-      source={require('../../assets/Others/LoginImage.png')} // Replace with your image
+      source={require('../assets/Others/LoginImage.png')} // Replace with your image
       style={styles.image}
     />
     <Text style = {styles.inputTitle}>Username or Email</Text>
@@ -59,7 +62,7 @@ export default function LoginPage(){
     </View>
 
     {/* Login Button */}
-    <TouchableOpacity onPress={handleLogin} style={styles.loginButton}>
+    <TouchableOpacity onPress={() => HandleLogin(email, password)} style={styles.loginButton}>
       <Text style={styles.loginButtonText}>Login</Text>
     </TouchableOpacity>
 
@@ -89,7 +92,8 @@ const styles = StyleSheet.create({
       header: {
         fontSize: 28,
         fontWeight: 'bold',
-        marginBottom: 10,
+        marginBottom: 5,
+        marginTop: 80,
       },
       subHeader: {
         fontSize: 16,
@@ -97,7 +101,9 @@ const styles = StyleSheet.create({
         marginBottom: 0,
       },
       image: {
-        width:"100%"
+        width:400,
+        height: 400,
+        alignSelf: 'center',
         
       },
       inputContainer: {
@@ -117,8 +123,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#000',
         padding: 15,
         borderRadius: 5,
-        width: '100%',
+        width: '90%',
         alignItems: 'center',
+        alignSelf: 'center',
       },
       loginButtonText: {
         color: '#fff',

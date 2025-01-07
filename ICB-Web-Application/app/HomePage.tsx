@@ -1,8 +1,8 @@
 import { View, Dimensions, Text, StyleSheet, Pressable, Image, Button } from "react-native";
 import Svg, { Path } from "react-native-svg"
-import TopShape from "../../assets/images/HomePage/HomePageShape.svg";
-import LISTSVG from "../../assets/images/HomePage/listIcon.svg";
-import HomepagePlayImage from "../../assets/images/HomePage/HomepagePlayImage.png"
+import TopShape from "../assets/images/HomePage/HomePageShape.svg";
+import LISTSVG from "../assets/images/HomePage/listIcon.svg";
+import HomepagePlayImage from "../assets/images/HomePage/HomepagePlayImage.png"
 import { SafeAreaView, StatusBar } from "react-native";
 
 
@@ -58,7 +58,7 @@ export default function Homepage(){
 
         {/* Play But */}
         <Pressable onPress={() => console.log("test")} style = {styles.PlayImageContainer}>
-                    <Image style = {styles.PlayImage} source={require("../../assets/images/HomePage/HomepagePlayImage.png")}></Image>
+                    <Image style = {styles.PlayImage} source={require("../assets/images/HomePage/HomepagePlayImage.png")}></Image>
 
                     <View style={styles.PlayOverlayContainer}>
                     </View>
@@ -83,19 +83,19 @@ export default function Homepage(){
 
             <View style={styles.StatisticsContainer}>
                 <View>
-                    <Image style = {styles.IconsSmiley} source={require("../../assets/images/HomePage/Smile.png")}></Image>
+                    <Image style = {styles.IconsSmiley} source={require("../assets/images/HomePage/Smile.png")}></Image>
                     <Text style = {styles.StatisticNumbers}>8</Text>
                     <Text style={styles.StatisticsTexts}>Good Moves</Text>
                 </View>
 
                 <View>
-                    <Image style = {styles.IconsSmiley} source={require("../../assets/images/HomePage/Smile.png")}></Image>
+                    <Image style = {styles.IconsSmiley} source={require("../assets/images/HomePage/Smile.png")}></Image>
                     <Text style = {styles.StatisticNumbers}>8</Text>
                     <Text style={styles.StatisticsTexts}>Good Moves</Text>
                 </View>
 
                 <View>
-                    <Image style = {styles.IconsSmiley} source={require("../../assets/images/HomePage/Smile.png")}></Image>
+                    <Image style = {styles.IconsSmiley} source={require("../assets/images/HomePage/Smile.png")}></Image>
                     <Text style = {styles.StatisticNumbers}>8</Text>
                     <Text style={styles.StatisticsTexts}>Good Moves</Text>
                 </View>
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        marginTop: 40,
+        marginTop: 100,
         width: "100%",
 
     },
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
         top: StatusBarHeight,
         justifyContent: "space-between",
         paddingHorizontal: 15,
-        marginTop: Height*0.03,
+        marginTop: Height*0.1,
         maxHeight: Height*0.1,
     },
     SvgContainer:{

@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import { ProgressCircle} from 'react-native-svg-charts';
+// import { ProgressCircle} from 'react-native-svg-charts';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -123,7 +123,7 @@ export default function ProfilePage(){
 
              </TouchableOpacity>
              <Image 
-                 source = {require('../../assets/Others/DefaultIcon.png')} // Replace with your image
+                 source = {require('../assets/Others/DefaultIcon.png')} // Replace with your image
                  style={styles.image}>
 
              </Image>
@@ -153,17 +153,17 @@ export default function ProfilePage(){
            </View>
            <View style = {styles.opponentsImages}>
             <Image 
-               source = {require('../../assets/Others/Profile_pic2.png')}
+               source = {require('../assets/Others/Profile_pic2.png')}
                style = {styles.opponentImage}>
 
             </Image>
             <Image 
-               source = {require('../../assets/Others/Profile_pic1.png')}
+               source = {require('../assets/Others/Profile_pic1.png')}
                style = {styles.opponentImage}>
 
             </Image>
             <Image 
-               source = {require('../../assets/Others/Profile_pic3.png')}
+               source = {require('../assets/Others/Profile_pic3.png')}
                style = {styles.opponentImage}>
 
             </Image>

@@ -1,7 +1,7 @@
 import { SafeAreaView, Text, View, StyleSheet, Dimensions, Image, Pressable, } from "react-native";
 import { useState } from "react";
 import Svg, { Path } from "react-native-svg"
-import TopShape from "../../assets/images/HomePage/HomePageShape.svg";
+import TopShape from "../assets/images/HomePage/HomePageShape.svg";
 import { RotateOutDownLeft } from "react-native-reanimated";
 
 const dimensions = Dimensions.get('window');
@@ -38,17 +38,17 @@ export default function SetUpPage(){
                 <View>
                     {/* Arrow Up */}
                     <View style = {styles.ArrowUpContainer}>
-                        <Image style={styles.ArrowUpImage}  source= {require("../../assets/images/SetUpPage/arrowUp.png")} />
+                        <Image style={styles.ArrowUpImage}  source= {require("../assets/images/SetUpPage/arrowUp.png")} />
                     </View>
 
                     {/* Timer Text */}
                     <View style ={styles.TimerContainer}>
-                        <Text adjustsFontSizeToFit={true} numberOfLines={1} style = {styles.TimerText}>05</Text>
+                        <Text adjustsFontSizeToFit={true} numberOfLines={1} style = {styles.TimerText}>06</Text>
                     </View>
 
                     {/* Arrow Down */}
                     <View style = {[styles.ArrowUpContainer, styles.rotateDown]}>
-                        <Image style={[styles.ArrowUpImage]}  source= {require("../../assets/images/SetUpPage/arrowUp.png")} />
+                        <Image style={[styles.ArrowUpImage]}  source= {require("../assets/images/SetUpPage/arrowUp.png")} />
                     </View>
 
                     </View>
@@ -57,7 +57,7 @@ export default function SetUpPage(){
                     <View>
                     {/* Arrow Up */}
                     <View style = {styles.ArrowUpContainer}>
-                        <Image style={styles.ArrowUpImage}  source= {require("../../assets/images/SetUpPage/arrowUp.png")} />
+                        <Image style={styles.ArrowUpImage}  source= {require("../assets/images/SetUpPage/arrowUp.png")} />
                     </View>
 
                     {/* Timer Text */}
@@ -67,7 +67,7 @@ export default function SetUpPage(){
 
                     {/* Arrow Down */}
                     <View style = {[styles.ArrowUpContainer, styles.rotateDown]}>
-                        <Image style={[styles.ArrowUpImage]}  source= {require("../../assets/images/SetUpPage/arrowUp.png")} />
+                        <Image style={[styles.ArrowUpImage]}  source= {require("../assets/images/SetUpPage/arrowUp.png")} />
                     </View>
                 </View>
             </View>
@@ -80,6 +80,7 @@ export default function SetUpPage(){
         </SafeAreaView>
     )
 }
+
 const styles = StyleSheet.create({
     SvgContainer:{
         position: "absolute",
