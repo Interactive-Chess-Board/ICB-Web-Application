@@ -1,6 +1,6 @@
 import { router } from "expo-router";
 import React, {useState} from "react";
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image, ScrollView, KeyboardAvoidingView } from 'react-native';
 import { HandleLogin } from "./config/firebase";
 
 
@@ -15,11 +15,7 @@ export default function LoginPage(){
       
 
       return (
-        <View >
-          {/* Back Button */}
-          {/* <TouchableOpacity style={styles.backButton}>
-            <Text style={styles.backButtonText}>←</Text>
-          </TouchableOpacity> */}
+        <ScrollView >
 
           <View style = {styles.container}>
           
@@ -34,39 +30,38 @@ export default function LoginPage(){
       style={styles.image}
     />
     <Text style = {styles.inputTitle}>Username or Email</Text>
-    <View style = {styles.inputContainer}>
+    <KeyboardAvoidingView style = {styles.inputContainer}>
     {/* Username/Email Input */}
     
-    <TextInput
-      style={styles.input}
-      placeholder="Username or email"
-      value={email}
-      onChangeText={setEmail}
-      keyboardType="email-address"
-      autoCapitalize="none"
-    />
-    </View>
+        <TextInput
+          style={styles.input}
+          placeholder="Username or email"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+    </KeyboardAvoidingView>
     <Text style = {styles.inputTitle}>Password:</Text>
-    <View style = {styles.inputContainer}>
-    
-    
+  
+    <KeyboardAvoidingView style = {styles.inputContainer}>
     {/* Password Input */}
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
+      />
+    </KeyboardAvoidingView>
     
-    <TextInput
-      style={styles.input}
-      placeholder="Password"
-      value={password}
-      onChangeText={setPassword}
-      secureTextEntry
-    />
-    </View>
 
     {/* Login Button */}
     <TouchableOpacity onPress={() => HandleLogin(email, password)} style={styles.loginButton}>
       <Text style={styles.loginButtonText}>Login</Text>
     </TouchableOpacity>
 
-    </View>
+    </ScrollView>
       
       )
       }
@@ -82,6 +77,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         padding: 5,
+        backgroundColor: '#FFF',
+        borderRadius: 10,
       },
       backButton: {
         marginTop : 20
@@ -91,14 +88,14 @@ const styles = StyleSheet.create({
       },
       header: {
         fontSize: 28,
-        fontWeight: 'bold',
+        fontWeight: '900',
         marginBottom: 5,
-        marginTop: 80,
+        marginTop: 60,
       },
       subHeader: {
-        fontSize: 16,
-        color: '#666',
-        marginBottom: 0,
+        fontSize: 10,
+        fontWeight: '400',
+        marginBottom: 5,
       },
       image: {
         width:400,

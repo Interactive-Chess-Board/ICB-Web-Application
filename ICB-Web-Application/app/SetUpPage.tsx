@@ -26,7 +26,7 @@ export default function SetUpPage(){
             </View>
 
             {/* Users that joined */}
-            <View style>
+            <View>
                 <Text style={styles.JoinedUsersText}>Users that joined:</Text>
             </View>
 

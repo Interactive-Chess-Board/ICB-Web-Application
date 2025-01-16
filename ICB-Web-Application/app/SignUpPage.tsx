@@ -1,5 +1,5 @@
 import { Dimensions, Pressable, SafeAreaView, StatusBar, StyleSheet, Text, TextInput, View, KeyboardAvoidingView, Platform, ScrollView } from "react-native"
-import { HandleSignIn } from "./config/firebase";
+import { HandleSignUp } from "./config/firebase";
 import { useState } from "react";
 
 //Init Device Variables
@@ -66,7 +66,7 @@ export default function SignUpPage(){
 
             {/* Sign Up button */}
             <View style = {styles.SignUpButtonContainer}>
-                <Pressable onPress={() => HandleSignIn(email,password,username)} style = {styles.SignUpButton}>
+                <Pressable onPress={() => HandleSignUp(email,password,username)} style = {styles.SignUpButton}>
                     <Text style = {styles.SignUpButtonText}>Sign up</Text>
                 </Pressable>
             </View>

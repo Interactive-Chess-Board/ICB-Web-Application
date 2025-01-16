@@ -10,23 +10,23 @@ const Width = dimensions.width;
 const ChessRow = ["a", "b", "c", "d", "e", "f", "g", "h"];
 const ChessColumn = ["1", "2", "3", "4", "5", "6", "7", "8"];
 const ChessPieces = {
-    p: require("../../assets/images/Chessboard/Piece=Pawn, Side=White.png"),
-    r: require("../../assets/images/Chessboard/Piece=Rook, Side=White.png"),
-    n: require("../../assets/images/Chessboard/Piece=Knight, Side=White.png"),
-    b: require("../../assets/images/Chessboard/Piece=Bishop, Side=White.png"),
-    q: require("../../assets/images/Chessboard/Piece=Queen, Side=White.png"),
-    k: require("../../assets/images/Chessboard/Piece=King, Side=White.png"),
-    P: require("../../assets/images/Chessboard/Piece=Pawn, Side=Black.png"),
-    R: require("../../assets/images/Chessboard/Piece=Rook, Side=Black.png"),
-    N: require("../../assets/images/Chessboard/Piece=Knight, Side=Black.png"),
-    B: require("../../assets/images/Chessboard/Piece=Bishop, Side=Black.png"),
-    Q: require("../../assets/images/Chessboard/Piece=Queen, Side=Black.png"),
-    K: require("../../assets/images/Chessboard/Piece=King, Side=Black.png"),
+    P: require("../../assets/images/Chessboard/Piece=Pawn, Side=White.png"),
+    R: require("../../assets/images/Chessboard/Piece=Rook, Side=White.png"),
+    N: require("../../assets/images/Chessboard/Piece=Knight, Side=White.png"),
+    B: require("../../assets/images/Chessboard/Piece=Bishop, Side=White.png"),
+    Q: require("../../assets/images/Chessboard/Piece=Queen, Side=White.png"),
+    K: require("../../assets/images/Chessboard/Piece=King, Side=White.png"),
+    p: require("../../assets/images/Chessboard/Piece=Pawn, Side=Black.png"),
+    r: require("../../assets/images/Chessboard/Piece=Rook, Side=Black.png"),
+    n: require("../../assets/images/Chessboard/Piece=Knight, Side=Black.png"),
+    b: require("../../assets/images/Chessboard/Piece=Bishop, Side=Black.png"),
+    q: require("../../assets/images/Chessboard/Piece=Queen, Side=Black.png"),
+    k: require("../../assets/images/Chessboard/Piece=King, Side=Black.png"),
 }
 
 
 
-export default function Chessboard(){
+export default function Chessboard({board}: {board: (string)[]}) {
     return(
         <View style = {styles.container}>
 
@@ -41,16 +41,16 @@ export default function Chessboard(){
                 </View>
             ))}
 
-            {SetUpBoard()}
+            {SetUpBoard(board)}
             
         </View>
     )
 }
 
 function placePiece(row: number = 0, col: number = 0, piece: string = ChessPieces.white_p){
-    console.log("Placing piece at: " + row + " " + col);
-    col = col * 30;
-    row = row * 30;
+    console.log(row)
+    row = col%2==1?row * 30: (30*7)-30*row;
+    col = col * 30+ 30*6;
     if(piece == "." ){
         return(
             console.log("Empty Space"),
@@ -60,7 +60,7 @@ function placePiece(row: number = 0, col: number = 0, piece: string = ChessPiece
     }
     return(
         <View key={"row:" + row + "col:"+ col} style = {styles.chessPieceContainer}>
-        <Image   style = {[styles.chessPiece, {left: 5 + row, top: 5+ col}]} source={piece} />
+        <Image   style = {[styles.chessPiece, {left: 5 + row, top: 5 + col}]} source={piece} />
         </View>
     )
 }

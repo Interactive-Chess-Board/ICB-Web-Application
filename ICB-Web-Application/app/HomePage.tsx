@@ -4,6 +4,10 @@ import TopShape from "../assets/images/HomePage/HomePageShape.svg";
 import LISTSVG from "../assets/images/HomePage/listIcon.svg";
 import HomepagePlayImage from "../assets/images/HomePage/HomepagePlayImage.png"
 import { SafeAreaView, StatusBar } from "react-native";
+import { router } from "expo-router";
+import { useEffect, useState } from "react";
+import { getUserData, getUserPhoto } from "./config/firebase";
+import ChessGame from "./config/ChessGame";
 
 
 const dimensions = Dimensions.get('window');
@@ -11,47 +15,43 @@ const Height = dimensions.height;
 const Width = dimensions.width;
 const StatusBarHeight = 0;
 
+
+
 export default function Homepage(){
-    
+    const [UserUsername, setUserUsername] = useState("");
+    const [UserPhoto, setUserPhoto] = useState("");
+
+    //Set Username
+    useEffect(() => {
+        getUserData().then((data) => {
+            setUserUsername(data? data.Username : "User");
+        });
+    }, []);
+
+    //Set User Photo
+    useEffect(() => {
+        getUserPhoto().then((data) => {
+            setUserPhoto(data? data : "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png");
+        });
+    }, []);
+
+    //test the board
     return(
         <SafeAreaView style = {{backgroundColor: "#F1F1F1", height: "100%"}}>
         
         {/* Top Page */}
-            <View style = {styles.SvgContainer}>
-            <Svg
-                width="100%"
-
-            >
-                <TopShape />
-            </Svg>
-            </View>
-
+        <View style = {styles.RedBox} />
             <View>
                 <View style = {styles.TopBarContainer}>
-
-                {/* Welcome message */}
-                <View>
-                <Text style = {styles.WelcomeText}>Welcome !</Text>
-                </View>
-                
-                
-                {/* List Icon and profile Icon */}
-                <View>
-
-                    {/* ListIcon */}
-                    
-                    <Pressable onPress={() => console.log("Pressed")}>
-                    <View style= {styles.svgListContainer}>
-                        <Svg style = {styles.ListSvg}>
-                            <LISTSVG />
-                            
-                        </Svg>
+                    {/* Welcome message */}
+                    <View>
+                    <Text style = {styles.WelcomeText}>{"Hi " + UserUsername + "!"}</Text>
                     </View>
-                    </Pressable>
-                    
 
-                </View>
-
+                    {/* Profile Picture */}
+                    <View>
+                        <Image style = {{width: 45, height: 45, borderRadius: 20}} source={{uri: UserPhoto}}></Image>
+                    </View>
                 </View>
         </View>
 
@@ -102,7 +102,7 @@ export default function Homepage(){
 
             </View>
 
-            <Pressable style = {styles.GameNumberButton}><Text style = {styles.GameNumberButtonText}>See more</Text></Pressable>
+            <Pressable onPress={() => router.push("/Game")} style = {styles.GameNumberButton}><Text style = {styles.GameNumberButtonText}>See more</Text></Pressable>
             
         </View>
 
@@ -112,10 +112,19 @@ export default function Homepage(){
 }
 
 const styles = StyleSheet.create({
+    RedBox:{
+        backgroundColor: "#FF4E4E",
+        height: Height*0.2,
+        width: "100%",
+        position: "absolute",
+        top: 0,
+        borderBottomLeftRadius: 20,
+        borderBottomRightRadius: 20,
+        },
     WelcomeText: {
         color: "white",
         fontWeight: "800",
-        fontSize: 25,
+        fontSize: 20,
     },
     
     svgListContainer:{
@@ -154,9 +163,6 @@ const styles = StyleSheet.create({
         fontWeight: "800",
         marginTop:10,
     },
-
-
-
     PlayText: {
         fontSize: 30,
         fontWeight: "800",
@@ -208,9 +214,10 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         top: StatusBarHeight,
         justifyContent: "space-between",
-        paddingHorizontal: 15,
-        marginTop: Height*0.1,
-        maxHeight: Height*0.1,
+        paddingHorizontal: 18,
+        alignItems: "center",
+        borderRadius: 10,
+        marginTop: Height*0.1
     },
     SvgContainer:{
         position: "absolute",
