@@ -48,12 +48,11 @@ export default function Chessboard({board}: {board: (string)[]}) {
 }
 
 function placePiece(row: number = 0, col: number = 0, piece: string = ChessPieces.white_p){
-    console.log(row)
-    row = col%2==1?row * 30: (30*7)-30*row;
-    col = col * 30+ 30*6;
+    // row = col%2==1?row * 30: (30*7)-30*row;
+    row = row * 30;
+    col = col * 30;
     if(piece == "." ){
         return(
-            console.log("Empty Space"),
             <View key={"row:" + row + "col:"+ col} style = {styles.chessPieceContainer}>
             </View>
         )
@@ -81,7 +80,7 @@ const styles = StyleSheet.create({
     container: {
         position: "relative",
         alignSelf: "center",
-        top: 100
+        marginTop: 100,
     },
     white: {
         backgroundColor: "white",

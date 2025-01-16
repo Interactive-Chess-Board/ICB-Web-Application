@@ -102,14 +102,18 @@ export async function getUserPhoto(){
 }
 
 export async function getGames(uid: string = "NULL"){
+    uid = await auth.currentUser?.uid || "NULL";
+    if (uid === "NULL") {
+        console.log("No user found");
+        return null;
+    }
     try{
-        const docref = doc(db, "games", uid);
-        const snapshot = await getDoc(docref);
-        if(snapshot.exists()){
-            return snapshot.data();
-        }
-        else{
+        const snapshot = await get(child(ref(database), 'users/' + uid + '/Games' + '/Game1'));
+        if (snapshot.exists()) {
+            return snapshot.val(); //return the username
+        } else {
             console.log("No such document");
+            return null;
         }
         
     }

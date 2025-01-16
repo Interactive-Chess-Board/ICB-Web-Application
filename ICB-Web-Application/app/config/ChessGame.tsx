@@ -1,20 +1,48 @@
-import {Chess} from "chess.js";
+const { Chess } = require("chess.js");
 
-export default function ChessGame(moves: string){
-    let boards = [""];
-    //initialize a new chess game
+function fenToBoard(fen: string) {
+    const [position] = fen.split(' '); // Extract the piece placement from FEN
+    const rows = position.split('/'); // Split into rows
+    const formatedBoard = [];
+    const board = rows.map(row => {
+        const expandedRow = [];
+        for (let char of row) {
+            if (isNaN(Number(char))) {
+                expandedRow.push(char); // Push the piece
+            } else {
+                expandedRow.push(...Array(Number(char)).fill('')); // Fill empty squares
+            }
+        }
+        return expandedRow;
+    });
+
+    // Flatten the board and replace empty squares with '.' to fit the expected output
+    for(let i=0;i<board.length;i++) {
+        for(let j=0;j<board[i].length;j++) {
+            if(board[i][j] === "") {
+                formatedBoard.push(".");
+            }
+            else{
+                formatedBoard.push(board[i][j]);
+            }
+        }
+    }
+    return formatedBoard;
+}
+
+export function ChessGame(moves: string) {
+    let boards: string[] = [];
     const game = new Chess();
-
-    //split moves into an array of moves
     const moveList = moves.split(" ");
-
-    //iterate through the moves and add them to the board
+    boards.push("rnbqkbnrpppppppp................................PPPPPPPPRNBQKBNR");
     moveList.forEach(move => {
         game.move(move);
         boards.push(game.fen());
     });
-    console.log(boards);
+    for(let i = 0; i < boards.length; i++) {
+        const boardArray = fenToBoard(boards[i]);
+        boards[i] = boardArray.join('');
+    }
     return boards;
-
-    
 }
+
