@@ -57,7 +57,7 @@ export default function Homepage(){
 
 
         {/* Play But */}
-        <Pressable onPress={() => console.log("test")} style = {styles.PlayImageContainer}>
+        <Pressable onPress={() => router.push("/SetUpPage")} style = {styles.PlayImageContainer}>
                     <Image style = {styles.PlayImage} source={require("../assets/images/HomePage/HomepagePlayImage.png")}></Image>
 
                     <View style={styles.PlayOverlayContainer}>

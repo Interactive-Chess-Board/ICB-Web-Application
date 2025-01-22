@@ -134,12 +134,12 @@ export default function ProfilePage(){
            <View style = {styles.pointsSection}>
             <Text style = {styles.pointsTitle}>Your points</Text>
             <Text style = {styles.pointsText}>+20 points from your previous games</Text>
-            <ProgressCircle
+            {/* <ProgressCircle
                 style = {styles.progressCircle}
                 progress = {0.65}
                 progressColor={"#4CAF50"}>
 
-            </ProgressCircle>
+            </ProgressCircle> */}
             <Text style = {styles.progressText}> 65% </Text>
 
            </View>

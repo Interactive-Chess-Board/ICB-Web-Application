@@ -108,7 +108,7 @@ export async function getGames(uid: string = "NULL"){
         return null;
     }
     try{
-        const snapshot = await get(child(ref(database), 'users/' + uid + '/Games' + '/Game1'));
+        const snapshot = await get(child(ref(database), 'users/' + uid + '/Games' + '/Game1' + '/Moves'));
         if (snapshot.exists()) {
             return snapshot.val(); //return the username
         } else {

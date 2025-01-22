@@ -17,6 +17,7 @@ export default function Game() {
                 const fetchedBoards = await FetchGames();
                 if (fetchedBoards && fetchedBoards.length > 0) {
                     setBoards(fetchedBoards);
+                    console.log("Fetched boards:", fetchedBoards);
                     setBoard(fetchedBoards[0]); // Initialize with the first board
                 } else {
                     console.error("No boards fetched!");
@@ -55,8 +56,7 @@ export default function Game() {
             <View style={styles.TextContainer}>
                 <Text style={styles.GameTitle}>Game 5</Text>
                 <Text style={styles.Feedback}>Nice Move</Text>
-            </View>
-            <Chessboard board={board} />
+            <Chessboard board={board.reverse()} />
 
             {/* Arrows */}
             <View style={styles.ArrowsContainer}>
@@ -75,8 +75,10 @@ export default function Game() {
 async function FetchGames(): Promise<string[]> {
     try {
         const Game = await getGames(); // Fetch game data
-        if (Game && Game.Moves) {
-            const Moves = Game.Moves;
+        const slicedGame = Game.slice(1, Game.size); // Slice the game data
+        console.log("Sliced Game:", slicedGame);
+        if (slicedGame) {
+            const Moves = slicedGame;
             const Boards: string[] = ChessGame(Moves); // Generate boards
             return Boards;
         } else {

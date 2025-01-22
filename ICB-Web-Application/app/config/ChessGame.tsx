@@ -30,17 +30,20 @@ function fenToBoard(fen: string) {
     return formatedBoard;
 }
 
-export function ChessGame(moves: string) {
+export function ChessGame(moves: string[]) {
     let boards: string[] = [];
     const game = new Chess();
-    const moveList = moves.split(" ");
     boards.push("rnbqkbnrpppppppp................................PPPPPPPPRNBQKBNR");
-    moveList.forEach(move => {
+    moves.forEach(move => {
+        console.log("Move: ", move);
         game.move(move);
+        console.log("FEN: ", game.fen());
         boards.push(game.fen());
     });
+
     for(let i = 0; i < boards.length; i++) {
         const boardArray = fenToBoard(boards[i]);
+        console.log("Board Array: ", boardArray);
         boards[i] = boardArray.join('');
     }
     return boards;
