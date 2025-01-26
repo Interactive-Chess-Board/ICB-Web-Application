@@ -35,7 +35,6 @@ export function ChessGame(moves: string[]) {
     const game = new Chess();
     boards.push("rnbqkbnrpppppppp................................PPPPPPPPRNBQKBNR");
     moves.forEach(move => {
-        console.log("Move: ", move);
         game.move(move);
         console.log("FEN: ", game.fen());
         boards.push(game.fen());

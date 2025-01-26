@@ -102,7 +102,7 @@ export default function Homepage(){
 
             </View>
 
-            <Pressable onPress={() => router.push("/Game")} style = {styles.GameNumberButton}><Text style = {styles.GameNumberButtonText}>See more</Text></Pressable>
+            <Pressable onPress={() => router.push("/GamesList")} style = {styles.GameNumberButton}><Text style = {styles.GameNumberButtonText}>See more</Text></Pressable>
             
         </View>
 

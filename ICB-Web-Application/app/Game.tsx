@@ -17,7 +17,6 @@ export default function Game() {
                 const fetchedBoards = await FetchGames();
                 if (fetchedBoards && fetchedBoards.length > 0) {
                     setBoards(fetchedBoards);
-                    console.log("Fetched boards:", fetchedBoards);
                     setBoard(fetchedBoards[0]); // Initialize with the first board
                 } else {
                     console.error("No boards fetched!");
@@ -57,7 +56,7 @@ export default function Game() {
                 <Text style={styles.GameTitle}>Game 5</Text>
                 <Text style={styles.Feedback}>Nice Move</Text>
             <Chessboard board={board.reverse()} />
-
+            </View>
             {/* Arrows */}
             <View style={styles.ArrowsContainer}>
                 <Pressable style = {styles.ArrowContainer} onPress={handlePrevMove}>

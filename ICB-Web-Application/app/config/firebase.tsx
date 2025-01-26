@@ -10,6 +10,7 @@ import {child, getDatabase, ref, set, get} from "firebase/database";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+
 export const firebaseConfig = {
   apiKey: "AIzaSyBCpj6rfq5H0ThQsL4JLFKFDXCRLe8oeEE",
   authDomain: "icb-capstone.firebaseapp.com",
@@ -108,7 +109,7 @@ export async function getGames(uid: string = "NULL"){
         return null;
     }
     try{
-        const snapshot = await get(child(ref(database), 'users/' + uid + '/Games' + '/Game1' + '/Moves'));
+        const snapshot = await get(child(ref(database), 'users/' + uid + '/Games'));
         if (snapshot.exists()) {
             return snapshot.val(); //return the username
         } else {
