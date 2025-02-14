@@ -1,100 +1,75 @@
-import { SafeAreaView, StyleSheet, View, Text, Image } from "react-native";
-import { useState } from "react";
+import { SafeAreaView, StyleSheet, View, Text, Image, Pressable } from "react-native";
+import { useState, useEffect } from "react";
+import { contain } from "three/src/extras/TextureUtils";
+import { getUserPhoto } from "../config/firebase";
+import { router } from "expo-router";
 
 interface GameListedProps {
     Title: string;
     Result: number;
     BlackElo: number;
     WhiteElo: number;
+    GameNum: number;
 }
 
-export const GameListed: React.FC<GameListedProps> = ({ Title, Result, BlackElo, WhiteElo }) => {
+export const GameListed: React.FC<GameListedProps> = ({ Title, Result, BlackElo, WhiteElo,GameNum }) => {
     const [userProfilePicUrl, setUserProfilePicUrl] = useState<string | null>("https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg");
     const [opponentProfilePicUrl, setOpponentProfilePicUrl] = useState<string | null>("https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg");
     const [userName, setUserName] = useState<string>("User 1");
     const [opponentName, setOpponentName] = useState<string>("User 2");
+    
+    let resultText = "";
+
+    if (Result === 0) {
+        resultText = "White Wins";
+    } else if (Result === 1) {
+        resultText = "Black Wins";
+    } else {
+        resultText = "Draw";
+    }
+
+    useEffect(() => {
+        getUserPhoto().then((data) => {
+            setUserProfilePicUrl(data ? data : "https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg");
+        });
+    }, []);
+
     return (
 
-        <View style={styles.container}>
-            {/* Text Info */}
-            <View style={styles.TextContainer}>
-                <Text style={styles.TextTitle}>{"Game " + Title.split("Game")[1]}</Text>
-            </View>
+        <Pressable onPressIn={() => router.push({ pathname: "/Game", params: { GameNum }})} style={styles.container}>
+            <Text style = {styles.title}>{"Game " + Title.split("Game")[1]}</Text>
 
-            {/* VS information */}
-            <View style={styles.VSContainer}>
+            {/* Profile Picture */}
+            <View>
+                <Image source={{ uri: userProfilePicUrl || "" }} style={{ width: 50, height: 50, borderRadius: 50 / 2, margin: 10, alignSelf: "center" }} />
 
-                {/* Left Oppenent */}
-                <View style={[styles.OpponentContainer]}>
-                    <Image source={{uri: userProfilePicUrl || ''}} style={styles.ProfilePic} />
-                    <Text style={styles.ProfileUserName}>{userName}</Text>
-                </View>
-
-                {/* Right Oppenent */}
-                <View style={[styles.OpponentContainer, {backgroundColor: "#e33b54"}]}>
-                    <Image source={{uri: opponentProfilePicUrl || ''}} style={styles.ProfilePic} />
-                    <Text style={styles.ProfileUserName}>{opponentName}</Text>
+                <View style={{ backgroundColor: "#FF4E4E", height: 95, width:"80%", borderRadius: 10, marginTop: 10, justifyContent: "center", borderWidth: 0.5, borderColor: "black"}}>
+                    <Text style = {{textAlign: "center", fontSize: 15, fontWeight: "600", color: "white"}}>{resultText}</Text>
                 </View>
             </View>
-        </View>
+        </Pressable>
 
     );
 
 };
 
 const styles = StyleSheet.create({
-    container:{
-        width: "90%",
-        height: 150,
-        borderColor: "#f5425d",
-        borderRadius: 10,
-        borderWidth: 1,
+    container: {
+        backgroundColor: "white",
+        height: 200,
+        width: 300,
         alignSelf: "center",
-        marginTop: 50,
-    },
-    TextContainer:{
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        paddingHorizontal: 10,
-        backgroundColor: "#f5425d",
+        margin: 10,
         borderRadius: 10,
-        borderBottomEndRadius:0,
-        borderBottomStartRadius:0,
+        borderWidth: 0.5,
+
     },
-    TextTitle:{
+    title: {
         fontSize: 20,
-        fontWeight: "bold",
-        color:"white",
+        fontWeight: "800",
+        textAlign: "center",
         marginTop: 10,
-        marginBottom: 10,
-        
-    },
-    VSContainer:{
-        flexDirection: "row",
-        justifyContent: "space-between",
-        height: 100,
-    },
-    OpponentContainer:{
-        width: "50%",
-        height: "100%",
-        flexDirection: "row",
-        alignItems: "center",
-        borderRadius: 10,
-        borderTopEndRadius:0,
-        borderTopStartRadius:0,
-    },
-    ProfilePic:{
-        width: 40,
-        height: 40,
-        borderRadius: 20,
-        marginLeft: 10,
-        marginRight: 20,
-    },
-    ProfileUserName:{
-        fontSize: 12,
-        fontWeight: "bold",
         color: "black",
-    }
+    },
 
 })

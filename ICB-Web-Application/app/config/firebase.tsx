@@ -2,9 +2,11 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import {createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, updateProfile} from "firebase/auth";
-import { Firestore, getFirestore, doc, setDoc, collection, addDoc, getDoc, } from "firebase/firestore";
+import { Firestore, getFirestore, doc, setDoc, collection, addDoc, getDoc, where, getDocs } from "firebase/firestore";
 import { router } from "expo-router";
-import {child, getDatabase, ref, set, get} from "firebase/database";
+import {child, getDatabase, ref, set, get, query, orderByChild, equalTo} from "firebase/database";
+import Game from "../Game";
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -27,6 +29,11 @@ export const analytics = getAnalytics(app);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const database = getDatabase(app);
+const storage = getStorage(app);
+
+//user password and email
+var curremail = "";
+var currpassword = "";
 
 export async function HandleSignUp(email: string, password: string, username: string) {
     try{
@@ -68,6 +75,8 @@ export async function HandleSignUp(email: string, password: string, username: st
 export async function HandleLogin(email: string, password: string) {
     try{
         const resonse  = await signInWithEmailAndPassword(auth, email, password);
+        curremail = email;
+        currpassword = password;
         router.push('/HomePage');
     }
     catch(e){
@@ -75,11 +84,18 @@ export async function HandleLogin(email: string, password: string) {
     }
 }
 
-export async function updateProfilePic(image: string){
+export async function updateProfilePic(image: Blob){
     try{
         const user = auth.currentUser;
+        console.log("User: ", image);
         if(user){
-            await updateProfile(user, {photoURL: image});
+            const metadata = {
+                contentType: 'image/jpeg'
+            };
+            const imageRef = storageRef(storage, `profile_pics/${user.uid}`);
+            await uploadBytesResumable(imageRef, image, metadata);
+            const imageUrl = await getDownloadURL(imageRef);
+            await updateProfile(user, { photoURL: imageUrl });
         }
     }
     catch(e){
@@ -91,14 +107,18 @@ export async function getUserPhoto(){
     try{
         const user = auth.currentUser;
         if(user){
-            return user.photoURL;
+            const imageRef = storageRef(storage, `profile_pics/${user.uid}`);
+            const imageUrl = await getDownloadURL(imageRef);
+            return imageUrl;
         }
         else{
             console.log("No user found");
+            return null;
         }
     }
     catch(e){
         console.log("Error: ", e);
+        return null;
     }
 }
 
@@ -125,7 +145,10 @@ export async function getGames(uid: string = "NULL"){
 
 //get the user data from the database
 export async function getUserData(uid: string = "NULL") {
-    uid = await auth.currentUser?.uid || "NULL";
+    //get current user Id
+    if(uid === "NULL"){
+        uid = await auth.currentUser?.uid || "NULL";
+    }
     if (uid === "NULL") {
         console.log("No user found");
         return null;
@@ -142,4 +165,106 @@ export async function getUserData(uid: string = "NULL") {
         console.log("Error: ", e);
         return null;
     }
+}
+
+export async function getUIDFromEmail(email: string, password: string) {
+    try {
+        // Temporarily sign in with the provided email and password
+        const tempUser = await signInWithEmailAndPassword(auth, email, password);
+        const uid = tempUser.user.uid;
+
+        // Sign out the temporary user
+        await auth.signOut();
+
+        // Sign back in with the current user
+        await signInWithEmailAndPassword(auth, curremail, currpassword);
+
+        return uid;
+    } catch (e) {
+        console.log("Error: ", e);
+        return null;
+    }
+  }
+  export async function getUID(){
+    try{
+        const user = auth.currentUser;
+        console.log("User: ", user);
+        if(user){
+            return user.uid;
+        }
+    }
+    catch(e){
+        console.log("Error: ", e);
+    }
+  }
+
+export async function StartGame(gameMode: string, timer: number, extra_time:number, assistance: string, oppUID: string){
+    //create a new game
+    const docref = collection(db, "Board1 Current Game");
+   
+    const uid = await auth.currentUser?.uid;
+    console.log("Game Started");
+    router.push('/CurrentGame');
+    var OtherId = oppUID=="NULL"? "I0l6aEpAoXhUiAMeHVqmiEZrtcG3": oppUID;
+
+    //set variables for the game
+    //start game
+    set(ref(database, 'Board1 Current Game/Start_Game'), true);
+
+    //setGame mode
+    set(ref(database, 'Board1 Current Game/Gamemode'), gameMode);
+
+    //set Assistance
+    set(ref(database, 'Board1 Current Game/Assistance'), assistance);
+
+    //set Timer
+    set(ref(database, 'Board1 Current Game/Timer'), timer);
+
+    //set Extra Time
+    set(ref(database, 'Board1 Current Game/Extra_Time'), extra_time);
+
+    // Randomly assign the player to be either white or black
+    const isWhite = Math.random() < 0.5;
+    if (isWhite) {
+        set(ref(database, 'Board1 Current Game/White_Player_ID'), uid);
+        set(ref(database, 'Board1 Current Game/Black_Player_ID'), OtherId);
+    }
+    else{
+        set(ref(database, 'Board1 Current Game/Black_Player_ID'), uid);
+        set(ref(database, 'Board1 Current Game/White_Player_ID'), OtherId);
+    }
+
+
+
+
+
+    //set Assisstance
+    
+}
+
+export async function Resign(side: string){
+    const uid = await auth.currentUser?.uid;
+    if(side === "White"){
+        set(ref(database, 'Board1 Current Game/White_Resign'), true);
+    }
+    else{
+        set(ref(database, 'Board1 Current Game/Black_Resign'), true);
+    }
+
+}
+
+export async function Draw(side: string){
+    const uid = await auth.currentUser?.uid;
+    if(side === "White"){
+        set(ref(database, 'Board1 Current Game/White_Draw'), true);
+    }
+    else{
+        set(ref(database, 'Board1 Current Game/Black_Draw'), true);
+    }
+
+}
+
+export async function endGame(){
+    //end the game
+    set(ref(database, 'Board1 Current Game/Start_Game'), false);
 }

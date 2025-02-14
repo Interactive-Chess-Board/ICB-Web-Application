@@ -18,6 +18,21 @@ export default function SignUpPage2() {
         });
     }, []);
 
+    const getBlobFromUri = async (uri: string): Promise<Blob> => {
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.onload = function () {
+                resolve(xhr.response);
+            };
+            xhr.onerror = function (e) {
+                console.error("Blob conversion failed:", e);
+                reject(new TypeError("Network request failed"));
+            };
+            xhr.responseType = "blob";
+            xhr.open("GET", uri, true);
+            xhr.send(null);
+        });
+    };
     // Browse handler moved inside the component
     const HandleBrowse = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -25,15 +40,23 @@ export default function SignUpPage2() {
             allowsEditing: true,
             quality: 1,
         });
-
-        if (!result.canceled && result.assets && result.assets.length > 0) {
+    
+        if (!result.canceled && result.assets?.length > 0) {
             const newUri = result.assets[0].uri;
-            setProfilePic(newUri); // Update UI immediately
-            await updateProfilePic(newUri); // Update backend
+            console.log("Selected Image URI:", newUri);
+    
+            const blob = await getBlobFromUri(newUri);
+            if (blob) {
+                setProfilePic(newUri); // Update UI
+                await updateProfilePic(blob); // Upload to Firebase
+            } else {
+                console.error("Failed to get blob from URI");
+            }
         } else {
             console.log("User cancelled or no valid image selected");
         }
     };
+    
     return (
         <SafeAreaView style={{ backgroundColor: "#FFFFFF", height: "100%", width: "100%", alignItems: "center" }}>
             {/* Back Button */}

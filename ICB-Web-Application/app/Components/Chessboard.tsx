@@ -27,6 +27,7 @@ const ChessPieces = {
 
 
 export default function Chessboard({board}: {board: (string)[]}) {
+    console.log("Board:", board);
     return(
         <View style = {styles.container}>
 

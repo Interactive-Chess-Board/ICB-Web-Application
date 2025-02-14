@@ -35,6 +35,10 @@ export function ChessGame(moves: string[]) {
     const game = new Chess();
     boards.push("rnbqkbnrpppppppp................................PPPPPPPPRNBQKBNR");
     moves.forEach(move => {
+        if(move === "None") {
+            console.log("None move");
+            return boards;
+        }
         game.move(move);
         console.log("FEN: ", game.fen());
         boards.push(game.fen());

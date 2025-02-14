@@ -1,32 +1,36 @@
 import { Button, Pressable, SafeAreaView, StyleSheet, View, Text } from "react-native";
 import Chessboard from "./Components/Chessboard";
 import { getGames } from "./config/firebase";
-import { useState, useEffect } from "react";
+import { useState, useEffect, } from "react";
 import { ChessGame } from "./config/ChessGame";
 import { Entypo, AntDesign } from "@expo/vector-icons";
+import { useLocalSearchParams } from "expo-router";
 
 export default function Game() {
     Entypo.loadFont();
     const [board, setBoard] = useState<string[]>(["p"]); // Current board state
-    const [boards, setBoards] = useState<string[]>([]); // All boards
+    const [boards, setBoards] = useState<string[][]>([]); // All boards
     const [index, setIndex] = useState(0); // Current move index
+    const { GameNum } = useLocalSearchParams();
+    console.log("GameNum:", GameNum);
 
-    useEffect(() => {
-        const fetchAndSetBoards = async () => {
-            try {
-                const fetchedBoards = await FetchGames();
-                if (fetchedBoards && fetchedBoards.length > 0) {
-                    setBoards(fetchedBoards);
-                    setBoard(fetchedBoards[0]); // Initialize with the first board
-                } else {
-                    console.error("No boards fetched!");
+        useEffect(() => {
+            const fetchAndSetBoards = async () => {
+                try {
+                    const fetchedBoards = await FetchGames(Number(GameNum));
+                    if (fetchedBoards && fetchedBoards.length > 0) {
+                        setBoards(fetchedBoards);
+                        setBoard(fetchedBoards[0]); // Initialize with the first board
+                    } else {
+                        console.error("No boards fetched!");
+                    }
+                } catch (error) {
+                    console.error("Error fetching boards:", error);
                 }
-            } catch (error) {
-                console.error("Error fetching boards:", error);
-            }
-        };
-        fetchAndSetBoards();
-    }, []);
+            };
+    
+            fetchAndSetBoards();
+        }, []);
 
     const handleNextMove = () => {
         if (index < boards.length - 1) {
@@ -47,15 +51,14 @@ export default function Game() {
             console.log("Reached the start of the game!");
         }
     };
-
     return (
         <SafeAreaView>
 
             {/* Text and Yapping */}
             <View style={styles.TextContainer}>
-                <Text style={styles.GameTitle}>Game 5</Text>
+                <Text style={styles.GameTitle}>{"Game: "+ GameNum}</Text>
                 <Text style={styles.Feedback}>Nice Move</Text>
-            <Chessboard board={board.reverse()} />
+            <Chessboard board={board} />
             </View>
             {/* Arrows */}
             <View style={styles.ArrowsContainer}>
@@ -71,15 +74,21 @@ export default function Game() {
     );
 }
 
-async function FetchGames(): Promise<string[]> {
+async function FetchGames(GameNumber:number): Promise<string[][]> {
     try {
         const Game = await getGames(); // Fetch game data
-        const slicedGame = Game.slice(1, Game.size); // Slice the game data
+        let slicedGame = Game["Game" + GameNumber]; // Get the game data
         console.log("Sliced Game:", slicedGame);
         if (slicedGame) {
-            const Moves = slicedGame;
-            const Boards: string[] = ChessGame(Moves); // Generate boards
-            return Boards;
+            const Moves = slicedGame.Moves;
+            console.log("Moves:", Moves);
+            console.log("ChessGame:", ChessGame(Moves));
+            let boards: string[][] = [];
+            for(const board of ChessGame(Moves)){
+                boards.push(board.split(""));
+            }
+
+            return boards;
         } else {
             throw new Error("Game data or Moves is undefined.");
         }
