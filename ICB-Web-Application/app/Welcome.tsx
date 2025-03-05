@@ -16,8 +16,6 @@ import Animated, {
     withTiming,
     useAnimatedStyle,
     Easing,
-    withSequence,
-    withRepeat
   } from 'react-native-reanimated';
 
 const dimensions = Dimensions.get("window");
@@ -64,25 +62,21 @@ export default function Welcome() {
             setPositionPiece(ref.current.position);
             if (ref.current) {
                 ref.current.rotation.y += delta * 0.5;
-
-                //Animations at start of the page
                 if (startAnimation && !isStartPressed) {
                     ref.current.position.y = 3;
                     startAnimation = false;
                 }
-                if (ref.current.position.y > -1 && !isStartPressed) {
+
+                // Animation goes from up to down
+                if (ref.current.position.y > 1 && !isStartPressed) {
                     ref.current.position.y -= delta * 2;
-
                 }
 
-                //Animation when user pressed the screen
-
-                if (isStartPressed && ref.current.position.z<0.4) {
-                    ref.current.position.z += delta * 2;
-                }
-                if(isStartPressed && ref.current.position.y<0.5){
+                // Animation goes from down to up
+                if (ref.current.position.y < 1.5 && isStartPressed) {
                     ref.current.position.y += delta * 2;
                 }
+
 
             }
         });
@@ -99,8 +93,36 @@ export default function Welcome() {
         });
     
         return(
-                <primitive object={scene} scale={0.4} ref={ref} />
+                <primitive object={scene} scale={0.2} ref={ref} />
         );
+        }
+
+        function OtherModel() {
+            if (!gltf) return null;
+            getAsset();
+            const { scene } = useGLTF(ChessPiece3DShadow);
+            const OtherRef = useRef<any>(null);
+            var startAnimation = true;
+
+            // Follow Piece
+
+    
+                const toonMaterial = new THREE.MeshToonMaterial({
+                    color: new THREE.Color("black"),
+                    gradientMap: null,
+                });
+            
+                scene.traverse((child: any) => {
+                    if (child.isMesh) {
+                        child.material = toonMaterial;
+                    }
+                });
+
+
+        
+            return(
+                <primitive object={scene} scale={0.1} ref={OtherRef} />
+            );
         }
 
         //2D Animation
@@ -108,7 +130,7 @@ export default function Welcome() {
             return {
                 transform: [
                     {
-                        translateY: withTiming(isStartPressed ? Height*0.35 : Height, {
+                        translateY: withTiming(isStartPressed ? Height*0.3 : Height, {
                             duration: 500,
                             easing: Easing.inOut(Easing.ease),
                         }),
@@ -131,43 +153,8 @@ export default function Welcome() {
                     duration: 1000,
                     easing: Easing.inOut(Easing.ease),
                 }),
-                height: withTiming(isStartPressed ? 200 : 100, {
-                    duration: 1000, 
-                    easing: Easing.inOut(Easing.ease),
-                }),
             };
         }
-        );
-
-        const ImageLogoAnimation = useAnimatedStyle(() => {
-            return {
-                width: withTiming(isStartPressed ? "50%" : "100%", {
-                    duration: 1000,
-                    easing: Easing.inOut(Easing.ease),
-                }),
-                height: withTiming(isStartPressed ? "50%" : "100%", {
-                    duration: 1000,
-                    easing: Easing.inOut(Easing.ease),
-                }),
-                marginTop: withTiming(isStartPressed ? 70 : 0, {
-                    duration: 1000,
-                    easing: Easing.inOut(Easing.ease),
-                }),
-            };
-        }
-        );
-
-        const blinkingAnimation = useAnimatedStyle(() => {
-            return{
-                opacity: withRepeat(
-                    withSequence(
-                        withTiming(0, {duration: 500}),
-                        withTiming(1, {duration: 500}),
-                    ),
-                    -1,
-                )
-            }
-            }
         );
 
 
@@ -177,24 +164,20 @@ export default function Welcome() {
             
             {/* Logo Image */}
             <Animated.View style = {[styles.LogoContainer, LogoAnimation]}>
-                <Animated.Image source={ICBLogo} style={[{width: "100%", height: "100%", resizeMode: "contain", alignSelf: "center"}, ImageLogoAnimation]}/>
+                <Image source={ICBLogo} style={{width: "100%", height: "100%", resizeMode: "contain"}}/>
             </Animated.View>
             <Canvas style={styles.CanvaContainer}>
                 <Suspense>
                     <OrbitControls />
 
-                    <pointLight intensity={150} position={[1, 0, 5]} />
+                    <pointLight intensity={100} position={[1, 0, 6]} />
 
-                    <mesh position={[0, 0, 0]} rotation={[19.7, 0, 0]}>
+                    <mesh position={[0, 0, 1]} rotation={[19.8, 0, 0]}>
                         <Model />
                     </mesh>
 
                 </Suspense>
             </Canvas>
-
-            <Animated.Text style={[styles.InstructionText, blinkingAnimation]}>
-                Press anywhere on the screen
-            </Animated.Text>
 
             <Animated.View style={[styles.otherContainer, OtherContainerAnimation]}>
                 <Text style={styles.Title}>Interactive Chess</Text>
@@ -313,17 +296,8 @@ const styles = StyleSheet.create({
         backgroundColor: "#FFFFFF",
         width: "90%",
         height: 100,
-        marginTop: Height*0.10,
+        marginTop: Height*0.15,
         alignSelf: "center",
         borderRadius: 10,
-        position: "absolute",
-        top: 0
-    },
-    InstructionText :{
-        fontSize: 20,
-        color: "grey",
-        alignSelf: "center",
-        position: "absolute",
-        top: Height*0.8,
     }
 });

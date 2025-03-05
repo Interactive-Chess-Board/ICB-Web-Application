@@ -1,126 +1,93 @@
-import React, { useState, useEffect, useRef } from "react";
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image, ScrollView, KeyboardAvoidingView, Dimensions, StatusBar, ActivityIndicator } from 'react-native';
-import Animated, { useAnimatedStyle, withTiming, Easing } from "react-native-reanimated";
 import { router } from "expo-router";
+import React, { useState, useEffect, useRef } from "react";
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image, ScrollView, KeyboardAvoidingView, Animated } from 'react-native';
 import { HandleLogin } from "./config/firebase";
-import { BlurView } from "expo-blur";
-
-// Get Width and Height of the screen
-const dimensions = Dimensions.get('window');
-const Height = dimensions.height + StatusBar.currentHeight;
-const Width = dimensions.width;
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isLoaded, setIsLoaded] = useState(false);
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(-100)).current;
 
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 1000,
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 1000,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [fadeAnim, slideAnim]);
 
-
-
-  // Handle Login
-  const handleLogin = async () => {
-    setIsLoaded(true);
+  const handleLogin = () => {
     console.log('Email:', email);
     console.log('Password:', password);
-    await HandleLogin(email, password);
-    setIsLoaded(false);
+    router.push('/HomePage');
   };
 
-  // Blur Effect Animation using Reanimated
-  const blurEffect = useAnimatedStyle(() => {
-    return {
-      opacity: withTiming(isLoaded ? 1 :1, {
-        duration: 500,
-        easing: Easing.inOut(Easing.ease),
-      }),
-      // filter: withTiming(isLoaded ? 'blur(5px)' : 'blur(0px)', {
-      //   duration: 500,
-      //   easing: Easing.inOut(Easing.ease),
-      // }),
-    };
-  });
-
-  const LoadingContainerAnimation = useAnimatedStyle(() => {
-    return {
-      transform: [
-        {
-          translateY: withTiming(isLoaded ? Height/2 - 75 : Height+500, {
-            duration: 500,
-            easing: Easing.inOut(Easing.ease),
-          }),
-        },
-      ],
-    };
-  }
-  );
-
-
   return (
-    <View style={[styles.page]}>
-      <ScrollView style={{filter: isLoaded?'blur(5px)':'blur(0px)'}}>
+    <ScrollView>
+      <Animated.View style={[styles.container, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
         {/* Welcome Text */}
-        <Animated.View style={[styles.container]}>
-          <Text style={styles.header}>Welcome Back</Text>
-        </Animated.View>
-
-        {/* Login Image */}
-        <Animated.Image
-          source={require('../assets/Others/LoginImage.png')}
-          style={[styles.image]}
-        />
-
-        {/* Username or Email Input */}
-        <Text style={styles.inputTitle}>Username or Email</Text>
-        <KeyboardAvoidingView style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Username or email"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-          />
-        </KeyboardAvoidingView>
-
-        {/* Password Input */}
-        <Text style={styles.inputTitle}>Password:</Text>
-        <KeyboardAvoidingView style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-          />
-        </KeyboardAvoidingView>
-
-        {/* Login Button */}
-        <TouchableOpacity onPress={handleLogin} style={styles.loginButton}>
-          <Text style={styles.loginButtonText}>Login</Text>
-        </TouchableOpacity>
-      </ScrollView>
-
-      {/* Blur Effect Layer */}
-      <Animated.View style={[styles.LoadingContainer, LoadingContainerAnimation]}>
-        <ActivityIndicator size={"large"} color={"black"} />
+        <Text style={styles.header}>Welcome Back</Text>
       </Animated.View>
-    </View>
+
+      <Animated.Image
+        source={require('../assets/Others/LoginImage.png')} // Replace with your image
+        style={[styles.image, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}
+      />
+      <Text style={styles.inputTitle}>Username or Email</Text>
+      <KeyboardAvoidingView style={styles.inputContainer}>
+        {/* Username/Email Input */}
+        <TextInput
+          style={styles.input}
+          placeholder="Username or email"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+      </KeyboardAvoidingView>
+      <Text style={styles.inputTitle}>Password:</Text>
+
+      <KeyboardAvoidingView style={styles.inputContainer}>
+        {/* Password Input */}
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+        />
+      </KeyboardAvoidingView>
+
+      {/* Login Button */}
+      <TouchableOpacity onPress={() => HandleLogin(email, password)} style={styles.loginButton}>
+        <Text style={styles.loginButtonText}>Login</Text>
+      </TouchableOpacity>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  page: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
   container: {
     flex: 0,
     alignItems: 'center',
     justifyContent: 'center',
     padding: 5,
+    backgroundColor: "#FF4E4E",
     borderRadius: 10,
-    backgroundColor: '#FF4E4E',
+  },
+  backButton: {
+    marginTop: 20
+  },
+  backButtonText: {
+    fontSize: 24,
   },
   header: {
     fontSize: 28,
@@ -129,11 +96,15 @@ const styles = StyleSheet.create({
     marginTop: 60,
     color: 'white',
   },
+  subHeader: {
+    fontSize: 10,
+    fontWeight: '400',
+    marginBottom: 5,
+  },
   image: {
-    width: 300,
-    height: 300,
+    width: 400,
+    height: 400,
     alignSelf: 'center',
-    marginBottom: 20,
   },
   inputContainer: {
     alignItems: "center"
@@ -142,39 +113,26 @@ const styles = StyleSheet.create({
     width: '90%',
     height: 50,
     padding: 10,
-    borderWidth: 1,
-    borderColor: '#000',
+    borderWidth: 0.9,
+    borderColor: 'black',
     borderRadius: 10,
     marginBottom: 20,
+  },
+  loginButton: {
+    backgroundColor: '#000',
+    padding: 15,
+    borderRadius: 5,
+    width: '90%',
+    alignItems: 'center',
+    alignSelf: 'center',
+  },
+  loginButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
   inputTitle: {
     marginLeft: 20,
     fontWeight: '800',
     fontSize: 16,
   },
-  loginButton: {
-    backgroundColor: '#000',
-    padding: 15,
-    borderRadius: 10,
-    width: '90%',
-    alignItems: 'center',
-    alignSelf: 'center',
-    marginTop: 10,
-  },
-  loginButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  LoadingContainer: {
-    width:300,
-    height:150,
-    backgroundColor: "white",
-    position: "absolute",
-    borderWidth: 1,
-    borderRadius: 10,
-    alignSelf:"center",
-    justifyContent: "center",
-    filter: 'blur(0px)',
-  }
 });
