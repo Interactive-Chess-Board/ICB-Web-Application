@@ -43,6 +43,7 @@ export default function Welcome() {
 
 
     //3D File Model
+    //start
     function Model() {
         if (!gltf) return null;
         const ref = useRef<any>(null);
@@ -76,8 +77,6 @@ export default function Welcome() {
                 if (ref.current.position.y < 1.5 && isStartPressed) {
                     ref.current.position.y += delta * 2;
                 }
-
-
             }
         });
     
@@ -96,34 +95,12 @@ export default function Welcome() {
                 <primitive object={scene} scale={0.2} ref={ref} />
         );
         }
-
-        function OtherModel() {
-            if (!gltf) return null;
-            getAsset();
-            const { scene } = useGLTF(ChessPiece3DShadow);
-            const OtherRef = useRef<any>(null);
-            var startAnimation = true;
-
-            // Follow Piece
-
-    
-                const toonMaterial = new THREE.MeshToonMaterial({
-                    color: new THREE.Color("black"),
-                    gradientMap: null,
-                });
-            
-                scene.traverse((child: any) => {
-                    if (child.isMesh) {
-                        child.material = toonMaterial;
-                    }
-                });
+//end
+       
 
 
         
-            return(
-                <primitive object={scene} scale={0.1} ref={OtherRef} />
-            );
-        }
+
 
         //2D Animation
         const OtherContainerAnimation = useAnimatedStyle(() => {
@@ -170,9 +147,9 @@ export default function Welcome() {
                 <Suspense>
                     <OrbitControls />
 
-                    <pointLight intensity={100} position={[1, 0, 6]} />
+                    <pointLight intensity={100} position={[1, 0, 5]} />
 
-                    <mesh position={[0, 0, 1]} rotation={[19.8, 0, 0]}>
+                    <mesh position={[1, 2, 1]} rotation={[19.8, 0, 0]}>
                         <Model />
                     </mesh>
 
@@ -265,10 +242,10 @@ const styles = StyleSheet.create({
     LoginButton: {
         display: "flex",
         justifyContent: "center",
-        marginVertical: 5,
+        marginVertical: 0,
         backgroundColor: "black",
         width: "100%",
-        height: 50,
+        height: 60,
         borderRadius: 10,
         alignItems: "center",
         textAlign: "center",
@@ -279,24 +256,24 @@ const styles = StyleSheet.create({
         marginVertical: 5,
         backgroundColor: "white",
         width: "100%",
-        height: 50,
+        height: 60,
         borderRadius: 10,
         borderWidth: 1,
     },
     GuestButton: {
         display: "flex",
         justifyContent: "center",
-        marginVertical: 5,
+        marginVertical: 0,
         backgroundColor: "#FF4E4E",
         width: "100%",
-        height: 50,
+        height: 60,
         borderRadius: 10,
     },
     LogoContainer:{
         backgroundColor: "#FFFFFF",
         width: "90%",
-        height: 100,
-        marginTop: Height*0.15,
+        height: 120,
+        marginTop: Height*0.165,
         alignSelf: "center",
         borderRadius: 10,
     }
