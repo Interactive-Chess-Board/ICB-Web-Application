@@ -81,7 +81,8 @@ const styles = StyleSheet.create({
     container: {
         position: "relative",
         alignSelf: "center",
-        marginTop: 100,
+        marginTop: 5,
+        marginBottom: 5, 
     },
     white: {
         backgroundColor: "white",

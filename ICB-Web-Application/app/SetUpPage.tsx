@@ -42,6 +42,12 @@ export default function SetUpPage(){
                 setUserPhoto(data);
             }
         });
+
+        getUserPhoto(oppUID).then((data) => {
+            if (data) {
+                setOppPhoto(data);
+            }
+        });
     }
     ,[])
     console.log(userName);
@@ -94,7 +100,14 @@ export default function SetUpPage(){
                                     setModalVisible(false);
                                     getUIDFromEmail(oppEmail,oppPassword).then((uid) => {
                                         if (uid) {
+                                            getUserPhoto(uid).then((data) => {
+                                                if (data) {
+                                                    setOppPhoto(data);
+                                                }
+                                            });
+
                                             setOppUID(uid);
+                                            
                                             getUserData(uid).then((data) => {
                                                 if (data) {
                                                     setOppName(data.Username);

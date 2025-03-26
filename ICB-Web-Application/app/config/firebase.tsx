@@ -62,6 +62,7 @@ export async function HandleSignUp(email: string, password: string, username: st
             Result: 0,
             White: true,
             White_Elo: 0,
+            TrainerMessages: []
         });
 
         //redirect to the welcome page
@@ -103,18 +104,14 @@ export async function updateProfilePic(image: Blob){
     }
 }
 
-export async function getUserPhoto(){
+export async function getUserPhoto( uid: string = "NULL"){
     try{
-        const user = auth.currentUser;
-        if(user){
-            const imageRef = storageRef(storage, `profile_pics/${user.uid}`);
+        if(uid === "NULL"){
+            uid = await auth.currentUser?.uid || "NULL";
+        }
+            const imageRef = storageRef(storage, `profile_pics/${uid}`);
             const imageUrl = await getDownloadURL(imageRef);
             return imageUrl;
-        }
-        else{
-            console.log("No user found");
-            return null;
-        }
     }
     catch(e){
         console.log("Error: ", e);
@@ -137,6 +134,21 @@ export async function getGames(uid: string = "NULL"){
             return null;
         }
         
+    }
+    catch(e){
+        console.log("Error: ", e);
+    }
+}
+
+export async function getCurrentGame() {
+    try{
+        const snapshot = await get(child(ref(database), 'Board1 Current Game'));
+        if (snapshot.exists()) {
+            return snapshot.val(); //return the username
+        } else {
+            console.log("No such document");
+            return null;
+        }
     }
     catch(e){
         console.log("Error: ", e);
@@ -185,6 +197,7 @@ export async function getUIDFromEmail(email: string, password: string) {
         return null;
     }
   }
+
   export async function getUID(){
     try{
         const user = auth.currentUser;
@@ -234,12 +247,8 @@ export async function StartGame(gameMode: string, timer: number, extra_time:numb
         set(ref(database, 'Board1 Current Game/White_Player_ID'), OtherId);
     }
 
-
-
-
-
-    //set Assisstance
-    
+    // Initialize trainer messages array
+    set(ref(database, 'Board1 Current Game/TrainerMessages'), []);
 }
 
 export async function Resign(side: string){
@@ -267,4 +276,67 @@ export async function Draw(side: string){
 export async function endGame(){
     //end the game
     set(ref(database, 'Board1 Current Game/Start_Game'), false);
+}
+
+// Add a function to update trainer messages
+export async function updateTrainerMessage(gameNumber: number, moveIndex: number, message: string) {
+    const uid = await auth.currentUser?.uid;
+    if (!uid) {
+        console.log("No user found");
+        return;
+    }
+    try {
+        const gamePath = `users/${uid}/Games/Game${gameNumber}/TrainerMessages`;
+        const snapshot = await get(child(ref(database), gamePath));
+        let messages = [];
+        if (snapshot.exists()) {
+            messages = snapshot.val();
+        }
+        messages[moveIndex] = message;
+        await set(ref(database, gamePath), messages);
+    } catch (error) {
+        console.error("Error updating trainer message:", error);
+    }
+}
+
+export async function getUsername(uid: string = "NULL"): Promise<string | null> {
+     //get current user Id
+     if (uid === "NULL") {
+        uid = await auth.currentUser?.uid || "NULL";  
+     }
+    try {
+        const snapshot = await get(child(ref(database), 'users/' + uid));
+        if (snapshot.exists()) {
+            return snapshot.val().Username; //return the username
+        } else {
+            console.log("No such document");
+            return null;
+        }
+    } catch (e) {
+        console.log("Error: ", e);
+        return null;
+    }
+}
+
+export async function timerPressBlack(){
+    const docref = collection(db, "Board1 Current Game");
+    const snapshot = await get(child(ref(database), 'Board1 Current Game/Black_Timer_Button'));
+    if(snapshot.exists()){
+        set(ref(database, 'Board1 Current Game/Black_Timer_Button'), true);
+    }
+    else{
+        set(ref(database, 'Board1 Current Game/Black_Timer_Button'), false);
+    }
+
+} 
+
+export async function timerPressWhite(){
+    const docref = collection(db, "Board1 Current Game");
+    const snapshot = await get(child(ref(database), 'Board1 Current Game/White_Timer_Button'));
+    if(snapshot.exists()){
+        set(ref(database, 'Board1 Current Game/White_Timer_Button'), true);
+    }
+    else{
+        set(ref(database, 'Board1 Current Game/White_Timer_Button'), false);
+    }
 }

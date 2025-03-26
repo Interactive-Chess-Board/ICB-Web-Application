@@ -1,8 +1,13 @@
-import { SafeAreaView, StyleSheet, View, Text, Image, Pressable } from "react-native";
+import { StyleSheet, View, Text, Image, Pressable } from "react-native";
 import { useState, useEffect } from "react";
-import { contain } from "three/src/extras/TextureUtils";
 import { getUserPhoto } from "../config/firebase";
 import { router } from "expo-router";
+
+const botImages = [
+    require("../../assets/images/Bots/RobotI.jpg"),
+    require("../../assets/images/Bots/RobotII.jpg"),
+    require("../../assets/images/Bots/RobotI.webp"),
+];
 
 interface GameListedProps {
     Title: string;
@@ -12,64 +17,120 @@ interface GameListedProps {
     GameNum: number;
 }
 
-export const GameListed: React.FC<GameListedProps> = ({ Title, Result, BlackElo, WhiteElo,GameNum }) => {
-    const [userProfilePicUrl, setUserProfilePicUrl] = useState<string | null>("https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg");
-    const [opponentProfilePicUrl, setOpponentProfilePicUrl] = useState<string | null>("https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg");
-    const [userName, setUserName] = useState<string>("User 1");
-    const [opponentName, setOpponentName] = useState<string>("User 2");
-    
-    let resultText = "";
+export const GameListed: React.FC<GameListedProps> = ({ Title, Result, BlackElo, WhiteElo, GameNum }) => {
+    const [userProfilePicUrl, setUserProfilePicUrl] = useState<string>("https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg");
+    const [botImage] = useState(botImages[Math.floor(Math.random() * botImages.length)]);
 
-    if (Result === 0) {
-        resultText = "White Wins";
-    } else if (Result === 1) {
-        resultText = "Black Wins";
-    } else {
-        resultText = "Draw";
-    }
+    const resultText = Result === 0 ? "White Wins" : Result === 1 ? "Black Wins" : "Draw";
+    const resultColor = Result === 0 ? "#4CAF50" : Result === 1 ? "red" : "red";
 
     useEffect(() => {
         getUserPhoto().then((data) => {
-            setUserProfilePicUrl(data ? data : "https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg");
+            if (data) setUserProfilePicUrl(data);
         });
     }, []);
 
     return (
+        <Pressable 
+            onPress={() => router.push({ pathname: "/Game", params: { GameNum }})} 
+            style={styles.container}
+        >
+            <View style={styles.content}>
+                <Text style={styles.title}>Game {Title.split("Game")[1]}</Text>
+                
+                <View style={styles.gameInfo}>
+                    <View style={styles.playerSection}>
+                        <Image 
+                            source={{ uri: userProfilePicUrl }} 
+                            style={styles.profilePic} 
+                        />
+                        <View style={styles.playerInfo}>
+                            <Text style={styles.playerName}>Player</Text>
+                            <Text style={styles.eloText}>ELO: {WhiteElo}</Text>
+                        </View>
+                    </View>
+                    
+                    <View style={[styles.resultBadge, { backgroundColor: resultColor }]}>
+                        <Text style={styles.resultText}>{resultText}</Text>
+                    </View>
 
-        <Pressable onPressIn={() => router.push({ pathname: "/Game", params: { GameNum }})} style={styles.container}>
-            <Text style = {styles.title}>{"Game " + Title.split("Game")[1]}</Text>
-
-            {/* Profile Picture */}
-            <View>
-                <Image source={{ uri: userProfilePicUrl || "" }} style={{ width: 50, height: 50, borderRadius: 50 / 2, margin: 10, alignSelf: "center" }} />
-
-                <View style={{ backgroundColor: "#FF4E4E", height: 95, width:"80%", borderRadius: 10, marginTop: 10, justifyContent: "center", borderWidth: 0.5, borderColor: "black"}}>
-                    <Text style = {{textAlign: "center", fontSize: 15, fontWeight: "600", color: "white"}}>{resultText}</Text>
+                    <View style={styles.playerSection}>
+                        <Image 
+                            source={botImage}
+                            style={styles.profilePic} 
+                        />
+                        <View style={styles.playerInfo}>
+                            <Text style={styles.playerName}>Cool Bot</Text>
+                            <Text style={styles.eloText}>ELO: {BlackElo}</Text>
+                        </View>
+                    </View>
                 </View>
             </View>
         </Pressable>
-
     );
-
 };
 
 const styles = StyleSheet.create({
     container: {
         backgroundColor: "white",
-        height: 200,
-        width: 300,
-        alignSelf: "center",
-        margin: 10,
-        borderRadius: 10,
-        borderWidth: 0.5,
-
+        marginVertical: 8,
+        marginHorizontal: 16,
+        borderRadius: 12,
+        elevation: 2,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        borderWidth: 0.2,
+        borderColor: "black",
+    },
+    content: {
+        padding: 16,
     },
     title: {
-        fontSize: 20,
-        fontWeight: "800",
-        textAlign: "center",
-        marginTop: 10,
-        color: "black",
+        fontSize: 18,
+        fontWeight: "700",
+        color: "#333",
+        marginBottom: 12,
     },
-
-})
+    gameInfo: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        marginBottom: 12,
+    },
+    playerSection: {
+        flexDirection: "row",
+        alignItems: "center",
+    },
+    playerInfo: {
+        marginLeft: 8,
+    },
+    playerName: {
+        fontSize: 14,
+        fontWeight: "600",
+        color: "#333",
+    },
+    profilePic: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+    },
+    resultBadge: {
+        paddingVertical: 6,
+        paddingHorizontal: 12,
+        borderRadius: 8,
+        minWidth: 100,
+    },
+    resultText: {
+        color: "white",
+        fontSize: 14,
+        fontWeight: "600",
+        textAlign: "center",
+    },
+    eloText: {
+        fontSize: 12,
+        color: "#666",
+        fontWeight: "500",
+    },
+});
