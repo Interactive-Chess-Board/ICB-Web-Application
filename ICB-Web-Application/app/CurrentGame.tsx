@@ -1,16 +1,42 @@
 import { Button, Pressable, View, StyleSheet, Text, Image, SafeAreaView } from "react-native";
 import AntDesign from '@expo/vector-icons/AntDesign';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { Draw, Resign, getGames, getUserPhoto, getUsername, timerPressBlack, timerPressWhite, getCurrentGame } from "./config/firebase";
+import { Draw, Resign, getGames, getUserPhoto, getUsername, timerPressBlack, timerPressWhite, getCurrentGame, getUserData } from "./config/firebase";
 import { useState, useEffect } from "react";
 import { ChessGame } from "./config/ChessGame";
 import Chessboard from "./Components/Chessboard";
+import { useLocalSearchParams } from 'expo-router';
 
 const botImages = [
     require("../assets/images/Bots/RobotI.jpg"),
     require("../assets/images/Bots/RobotII.jpg"),
     require("../assets/images/Bots/RobotI.webp"),
 ];
+
+// Timer Component
+function Timer({ minutes, seconds, active, color }: { minutes: number, seconds: number, active: boolean, color: string}) {
+    const [timeLeft, setTimeLeft] = useState(minutes * 60 + seconds);
+
+    useEffect(() => {
+        let interval: NodeJS.Timeout;
+        if (active && timeLeft > 0) {
+            interval = setInterval(() => {
+                setTimeLeft((prevTime) => prevTime - 1);
+            }, 1000);
+        }
+        return () => clearInterval(interval);
+    }, [active, timeLeft]);
+
+    const displayMinutes = Math.floor(timeLeft / 60);
+    const displaySeconds = timeLeft % 60;
+    const formattedTime = `${displayMinutes.toString().padStart(2, '0')}:${displaySeconds.toString().padStart(2, '0')}`;
+
+    return (
+        <View style={[styles.timerContainer, { backgroundColor: color }]}>
+            <Text style={[styles.timerText, {color: color=="white" ? "black" : "white"}]}>{formattedTime}</Text>
+        </View>
+    );
+}
 
 // Advantage Bar Component
 function AdvantageBar({ advantage }: { advantage: number }) {
@@ -39,6 +65,10 @@ function AdvantageBar({ advantage }: { advantage: number }) {
 }
 
 export default function CurrentGame() {
+    const params = useLocalSearchParams();
+    const selectedMinutes = Number(params.selectedMinutes) || 0;
+    const selectedSeconds = Number(params.selectedSeconds) || 0;
+
     const [board, setBoard] = useState<string[]>(["p"]); // Current board state
     const [boards, setBoards] = useState<string[]>([]); // All boards
     const [index, setIndex] = useState(0); // Current move index
@@ -52,7 +82,6 @@ export default function CurrentGame() {
     const [WhiteMaterialAdvantage, setWhiteMaterialAdvantage] = useState<number>(0);
     const [BlackMaterialAdvantage, setBlackMaterialAdvantage] = useState<number>(0);
 
-
     //White Player Photo URL and Username
     const [whitePlayerPhoto, setWhitePlayerPhoto] = useState<string>("");
     const [whitePlayerUsername, setWhitePlayerUsername] = useState<string>("");
@@ -61,6 +90,12 @@ export default function CurrentGame() {
     const [blackPlayerPhoto, setBlackPlayerPhoto] = useState<string>("");
     const [blackPlayerUsername, setBlackPlayerUsername] = useState<string>("");
     
+    const [blackTimerActive, setBlackTimerActive] = useState(false);
+    const [whiteTimerActive, setWhiteTimerActive] = useState(true);
+    const [blackMinutes, setBlackMinutes] = useState(selectedMinutes);
+    const [blackSeconds, setBlackSeconds] = useState(selectedSeconds);
+    const [whiteMinutes, setWhiteMinutes] = useState(selectedMinutes);
+    const [whiteSeconds, setWhiteSeconds] = useState(selectedSeconds);
 
     useEffect(() => {
         const fetchAndSetBoards = async () => {
@@ -104,6 +139,7 @@ export default function CurrentGame() {
                     if(fetchedData.BlackAdvantage){
                         setAdvantage(fetchedData.BlackAdvantage);
                     }
+
                     if(fetchedData.materialAdvantage){
                         if (startMaterialAdvantage - fetchedData.materialAdvantage as number > 0) {
                             setWhiteMaterialAdvantage(startMaterialAdvantage + 1);
@@ -145,6 +181,8 @@ export default function CurrentGame() {
 
         return () => clearInterval(intervalId); // Cleanup interval on component unmount
     }, []);
+    console.log("Selected Minutes:", selectedMinutes);
+    console.log("Selected Seconds:", selectedSeconds);
 
     return (
         <SafeAreaView>
@@ -154,16 +192,26 @@ export default function CurrentGame() {
                     <Text style={styles.Title}>Game</Text>
                 </View>
 
-                {/* Player Section */}
-                <View style={[styles.PlayerInfoSection, styles.PlayerAlign]}>
-                    <Image 
-                        source={blackPlayerPhoto ? { uri: blackPlayerPhoto } : botImage} 
-                        style={styles.ProfilePic} 
-                    />
-                    <View style={styles.TitleContainer}>
-                        <Text style={styles.GameTitle}>{blackPlayerUsername || "Black Player"}</Text>
-                        <Text style={styles.EloText}>ELO: {opponentElo}</Text>
-                        <Text style={styles.AdvantageText}>+{BlackMaterialAdvantage}</Text>
+                {/* Player Section with Timer */}
+                <View style={styles.playerSectionWithTimer}>
+                    <View style={styles.timerWrapper}>
+                        <Timer 
+                            minutes={blackMinutes} 
+                            seconds={blackSeconds} 
+                            active={blackTimerActive} 
+                            color="black"
+                        />
+                    </View>
+                    <View style={[styles.PlayerInfoSection, styles.PlayerAlign]}>
+                        <Image 
+                            source={blackPlayerPhoto ? { uri: blackPlayerPhoto } : botImage} 
+                            style={styles.ProfilePic} 
+                        />
+                        <View style={styles.TitleContainer}>
+                            <Text style={styles.GameTitle}>{blackPlayerUsername || "Black Player"}</Text>
+                            <Text style={styles.EloText}>ELO: {opponentElo}</Text>
+                            <Text style={styles.AdvantageText}>+{BlackMaterialAdvantage}</Text>
+                        </View>
                     </View>
                 </View>
 
@@ -180,7 +228,14 @@ export default function CurrentGame() {
 
                 {/* Black Timer Button */}
                 <View style={styles.TimerButtonContainer}>
-                    <Pressable onPress={async () => timerPressBlack()} style={[styles.TimerButton, { backgroundColor: "red" }]}>
+                    <Pressable 
+                        onPress={async () => {
+                            await timerPressBlack();
+                            setWhiteTimerActive(true);
+                            setBlackTimerActive(false);
+                        }} 
+                        style={[styles.TimerButton, { backgroundColor: "red" }]}
+                    >
                         <MaterialCommunityIcons name="timer" size={24} color="white" />
                     </Pressable>
                 </View>
@@ -192,7 +247,12 @@ export default function CurrentGame() {
 
                 {/* White Timer Button */}
                 <View style={styles.TimerButtonContainer}>
-                    <Pressable onPress={async () => timerPressWhite()} style={[styles.TimerButton, { backgroundColor: "red" }]}>
+                    <Pressable onPress={async () => {
+                        await timerPressWhite();
+                        setWhiteTimerActive(false);
+                        setBlackTimerActive(true);
+                    }} 
+                    style={[styles.TimerButton, { backgroundColor: "red" }]}>
                         <MaterialCommunityIcons name="timer" size={24} color="white" />
                     </Pressable>
                 </View>
@@ -208,16 +268,26 @@ export default function CurrentGame() {
                     </Pressable>
                 </View>
 
-                {/* Opponent Section */}
-                <View style={[styles.PlayerInfoSection, styles.OpponentAlign]}>
-                    <Image 
-                        source={whitePlayerPhoto ? { uri: whitePlayerPhoto } : botImage}
-                        style={styles.ProfilePic} 
-                    />
-                    <View style={styles.TitleContainer}>
-                        <Text style={styles.GameTitle}>{whitePlayerUsername || "White Player"}</Text>
-                        <Text style={styles.EloText}>ELO: {elo}</Text>
-                        <Text style={styles.AdvantageText}>+{WhiteMaterialAdvantage}</Text>
+                {/* Opponent Section with Timer */}
+                <View style={styles.playerSectionWithTimer}>
+                    <View style={[styles.PlayerInfoSection, styles.OpponentAlign]}>
+                        <Image 
+                            source={whitePlayerPhoto ? { uri: whitePlayerPhoto } : botImage}
+                            style={styles.ProfilePic} 
+                        />
+                        <View style={styles.TitleContainer}>
+                            <Text style={styles.GameTitle}>{whitePlayerUsername || "White Player"}</Text>
+                            <Text style={styles.EloText}>ELO: {elo}</Text>
+                            <Text style={styles.AdvantageText}>+{WhiteMaterialAdvantage}</Text>
+                        </View>
+                    </View>
+                    <View style={styles.timerWrapper}>
+                        <Timer 
+                            minutes={whiteMinutes} 
+                            seconds={whiteSeconds} 
+                            active={whiteTimerActive} 
+                            color="white"
+                        />
                     </View>
                 </View>
             </View>
@@ -230,12 +300,16 @@ async function FetchGames(): Promise<{ boards: string[], playerElo?: number, opp
         const Game = await getGames(); // Fetch game data
         const CurrentGame = await getCurrentGame(); //Get the current game
         console.log("Current Game:", CurrentGame);
-        let slicedGame;
-        for (const key in Game) {
-            console.log("Game Data:", key, Game[key]);
-            slicedGame = Game[key];
-        }
-        console.log("Sliced Game:", slicedGame);
+        const userData = await getUserData();
+        let numberOfGames: number = userData["Games Played"];
+        console.log("Number of Games:", numberOfGames);
+
+        // Get the current game data
+        const currentGameKey = `Game${numberOfGames}`;
+        const slicedGame = Game[currentGameKey];
+        
+        console.log("Current Game Data:", slicedGame);
+        
         if (slicedGame) {
             const Moves = slicedGame.Moves;
             console.log("Moves:", Moves);
@@ -243,7 +317,7 @@ async function FetchGames(): Promise<{ boards: string[], playerElo?: number, opp
             const isPlayerWhite = slicedGame["White_Player_ID"] === CurrentGame["White_Player_ID"];
 
             const PlayerAdvantage: string = slicedGame["Victory Probabilities"][slicedGame["Victory Probabilities"].length - 1].replace('%', '');
-            const BlackAdvantage = isPlayerWhite ? 100 -parseInt(PlayerAdvantage): parseInt(PlayerAdvantage);
+            const BlackAdvantage = isPlayerWhite ? 100 - parseInt(PlayerAdvantage) : parseInt(PlayerAdvantage);
             console.log("Black Advantage:", BlackAdvantage);
 
             return {
@@ -253,7 +327,7 @@ async function FetchGames(): Promise<{ boards: string[], playerElo?: number, opp
                 White_Player_ID: CurrentGame["White_Player_ID"],
                 Black_Player_ID: CurrentGame["Black_Player_ID"],
                 BlackAdvantage: BlackAdvantage,
-                materialAdvantage: slicedGame["Material Advantages"]
+                materialAdvantage: slicedGame["Material Advantages"],
             };
         } else {
             throw new Error("Game data or Moves is undefined.");
@@ -402,5 +476,30 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         color: '#333',
         textAlign: 'center',
+    },
+    timerContainer: {
+        padding: 10,
+        borderRadius: 10,
+        minWidth: 80,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginHorizontal: 10,
+        width: 100,
+        height: 50,
+    },
+    timerText: {
+        fontSize: 20,
+        fontWeight: '400',
+        color: '#fff',
+    },
+    playerSectionWithTimer: {
+        flexDirection: 'row-reverse',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: '100%',
+        paddingHorizontal: 10,
+    },
+    timerWrapper: {
+        marginHorizontal: 10,
     },
 });

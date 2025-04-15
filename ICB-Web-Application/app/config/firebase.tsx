@@ -13,15 +13,16 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, uploadBytes
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 
-export const firebaseConfig = {
-  apiKey: "AIzaSyBCpj6rfq5H0ThQsL4JLFKFDXCRLe8oeEE",
-  authDomain: "icb-capstone.firebaseapp.com",
-  projectId: "icb-capstone",
-  storageBucket: "icb-capstone.firebasestorage.app",
-  messagingSenderId: "174368358822",
-  appId: "1:174368358822:web:0421815557c94963cccf67",
-  measurementId: "G-MEEJN6BW6W"
-};
+const firebaseConfig = {
+    apiKey: process.env.EXPO_PUBLIC_API_KEY,
+    authDomain: "icb-capstone.firebaseapp.com",
+    databaseURL: "https://icb-capstone-default-rtdb.firebaseio.com",
+    projectId: "icb-capstone",
+    storageBucket: "icb-capstone.firebasestorage.app",
+    messagingSenderId: "174368358822",
+    appId: "1:174368358822:web:a885d39589eb4a93cccf67",
+    measurementId: "G-M023VSYEZ8"
+  };
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
@@ -217,7 +218,13 @@ export async function StartGame(gameMode: string, timer: number, extra_time:numb
    
     const uid = await auth.currentUser?.uid;
     console.log("Game Started");
-    router.push('/CurrentGame');
+    router.push({
+        pathname: '/CurrentGame',
+        params: {
+            selectedMinutes: timer,
+            selectedSeconds: extra_time
+        }
+    });
     var OtherId = oppUID=="NULL"? "I0l6aEpAoXhUiAMeHVqmiEZrtcG3": oppUID;
 
     //set variables for the game
@@ -327,6 +334,7 @@ export async function timerPressBlack(){
     else{
         set(ref(database, 'Board1 Current Game/Black_Timer_Button'), false);
     }
+    
 
 } 
 
