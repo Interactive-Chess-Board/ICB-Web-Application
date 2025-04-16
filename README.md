@@ -29,7 +29,7 @@ This project is built with a modern, flexible tech stack focused on interactivit
 To run the project locally:
 
 ```bash
-git clone https://github.com/your-username/icb-web-app.git
+git clone https://github.com/Interactive-Chess-Board/ICB-Web-Application.git
 cd ./ICB-Web-Application
 npm install
 npx expo start
