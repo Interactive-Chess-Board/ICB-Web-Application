@@ -42,7 +42,8 @@ Make sure you have **Node.js** and **Expo CLI** installed.
 
 <div align="center">
 <img src="https://github.com/user-attachments/assets/7302f277-f395-4f26-a2b8-e11ea1f84494" alt="Homepage_edit" width="200"/>
-
+<img src="https://github.com/user-attachments/assets/246d959c-4528-4efa-b719-b72747207e8f" alt="Homepage_edit" width="200"/>
+  <img src="https://github.com/user-attachments/assets/c673d3aa-f336-427b-a74f-a696aa13fd15" alt="Homepage_edit" width="200"/>
 </div>
 
 
